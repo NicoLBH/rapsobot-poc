@@ -1,11 +1,129 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>RAPSOBOT PoC</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RAPSOBOT – PoC (Phase 1)</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
-  <h1>RAPSOBOT – PoC</h1>
-  <p>GitHub Pages fonctionne.</p>
+  <header class="wrap">
+    <h1>RAPSOBOT – PoC</h1>
+    <p class="muted">Phase 1 : UI statique (GitHub Pages) → upload PDF + paramètres → JSON (mock ou webhook).</p>
+  </header>
+
+  <main class="wrap grid">
+    <section class="card">
+      <h2>Entrées</h2>
+
+      <form id="pocForm" class="form">
+        <div class="row">
+          <label>
+            Commune + code postal
+            <input id="communeCp" name="communeCp" placeholder="Annecy 74000" required />
+          </label>
+        </div>
+
+        <div class="row two">
+          <label>
+            Catégorie d’importance
+            <select id="importance" name="importance" required>
+              <option value="">—</option>
+              <option>I</option><option>II</option><option>III</option><option>IV</option>
+              <option>je ne sais pas</option>
+            </select>
+          </label>
+
+          <label>
+            Classe de sol
+            <select id="soilClass" name="soilClass" required>
+              <option value="">—</option>
+              <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option>
+              <option>S1</option><option>S2</option>
+              <option>je ne sais pas</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="row two">
+          <label>
+            Liquéfaction
+            <select id="liquefaction" name="liquefaction" required>
+              <option value="">—</option>
+              <option>oui</option><option>non</option><option>je ne sais pas</option>
+            </select>
+          </label>
+
+          <label>
+            Référentiel
+            <select id="referential" name="referential" required>
+              <option value="">—</option>
+              <option>Eurocode 8</option>
+              <option>PS-MI 89 révisées 92</option>
+              <option>CP-MI Antilles</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="row">
+          <label>
+            PDF (note / pièces)
+            <input id="pdf" name="pdf" type="file" accept="application/pdf" required />
+          </label>
+          <p class="hint">Astuce : commence avec un petit PDF (&lt; 5 Mo) pour éviter les soucis.</p>
+        </div>
+
+        <div class="row actions">
+          <button type="submit" id="runBtn">Lancer</button>
+
+          <label class="switch">
+            <input type="checkbox" id="mockMode" checked />
+            <span>Mode mock</span>
+          </label>
+
+          <label class="switch">
+            <input type="checkbox" id="showRaw" checked />
+            <span>Afficher JSON brut</span>
+          </label>
+        </div>
+
+        <div class="row">
+          <label>
+            Webhook n8n (si mode mock désactivé)
+            <input id="webhookUrl" name="webhookUrl"
+                   placeholder="https://.../webhook/rapsobot-poc"
+                   autocomplete="off" />
+          </label>
+          <p class="hint muted">En Phase 1 tu peux rester en mock. Quand tu activeras n8n, on gérera CORS.</p>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Sorties</h2>
+
+      <div id="status" class="status muted">Prêt.</div>
+
+      <div id="rendered"></div>
+
+      <details id="rawBox" open>
+        <summary>JSON brut</summary>
+        <pre id="raw"></pre>
+      </details>
+
+      <details>
+        <summary>Log</summary>
+        <pre id="log"></pre>
+      </details>
+    </section>
+  </main>
+
+  <footer class="wrap muted foot">
+    <small>RAPSOBOT PoC – UI GitHub Pages</small>
+  </footer>
+
+  <script src="app.js"></script>
 </body>
 </html>
+

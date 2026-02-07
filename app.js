@@ -189,30 +189,46 @@ $("pocForm").addEventListener("submit", async (e) => {
 });
 
 function applyQueryParams() {
+  function applyQueryParams() {
   const qs = new URLSearchParams(window.location.search);
+  if (![...qs.keys()].length) return;
 
-  const setIf = (id, key) => {
-    if (qs.has(key) && qs.get(key)) $(id).value = qs.get(key);
+  const setIfPresent = (inputId, paramName) => {
+    if (qs.has(paramName) && qs.get(paramName)) {
+      const el = document.getElementById(inputId);
+      if (el) el.value = qs.get(paramName);
+    }
   };
 
-  setIf("communeCp", "communeCp");
-  setIf("importance", "importance");
-  setIf("soilClass", "soilClass");
-  setIf("liquefaction", "liquefaction");
-  setIf("referential", "referential");
-  setIf("webhookUrl", "webhookUrl");
+  // Champs métier
+  setIfPresent("communeCp", "communeCp");
+  setIfPresent("importance", "importance");
+  setIfPresent("soilClass", "soilClass");
+  setIfPresent("liquefaction", "liquefaction");
+  setIfPresent("referential", "referential");
 
-  // Mode mock via ?mock=1 ou ?mock=0
-  if (qs.has("mock")) $("mockMode").checked = (qs.get("mock") !== "0");
+  // Webhook
+  setIfPresent("webhookUrl", "webhookUrl");
 
-  // Message si l’URL contient pdf=... (info uniquement)
-  if (qs.has("pdf") && qs.get("pdf")) {
-    log(`[INFO] pdf param détecté: "${qs.get("pdf")}" (sélection manuelle obligatoire pour des raisons de sécurité navigateur).`);
+  // Mode mock : ?mock=1 (défaut) ou ?mock=0
+  if (qs.has("mock")) {
+    const mock = qs.get("mock");
+    document.getElementById("mockMode").checked = (mock !== "0");
   }
 
-  // Nettoyage visuel
-  if ([...qs.keys()].length) setStatus("Champs pré-remplis via URL. Sélectionne le PDF manuellement puis Lance.", "ok");
+  // Information PDF (impossible à précharger pour raisons de sécurité)
+  if (qs.has("pdf") && qs.get("pdf")) {
+    const pdfName = qs.get("pdf");
+    log(`[INFO] PDF indiqué dans l’URL : "${pdfName}"`);
+    log(`[INFO] Sélection manuelle du PDF obligatoire (contrainte navigateur).`);
+  }
+
+  setStatus(
+    "Champs pré-remplis via URL. Sélectionne le PDF manuellement puis clique sur Lancer.",
+    "ok"
+  );
 }
 
+// Exécution au chargement
 applyQueryParams();
 

@@ -187,3 +187,32 @@ $("pocForm").addEventListener("submit", async (e) => {
     log("[ERROR] " + (err?.stack || err));
   }
 });
+
+function applyQueryParams() {
+  const qs = new URLSearchParams(window.location.search);
+
+  const setIf = (id, key) => {
+    if (qs.has(key) && qs.get(key)) $(id).value = qs.get(key);
+  };
+
+  setIf("communeCp", "communeCp");
+  setIf("importance", "importance");
+  setIf("soilClass", "soilClass");
+  setIf("liquefaction", "liquefaction");
+  setIf("referential", "referential");
+  setIf("webhookUrl", "webhookUrl");
+
+  // Mode mock via ?mock=1 ou ?mock=0
+  if (qs.has("mock")) $("mockMode").checked = (qs.get("mock") !== "0");
+
+  // Message si l’URL contient pdf=... (info uniquement)
+  if (qs.has("pdf") && qs.get("pdf")) {
+    log(`[INFO] pdf param détecté: "${qs.get("pdf")}" (sélection manuelle obligatoire pour des raisons de sécurité navigateur).`);
+  }
+
+  // Nettoyage visuel
+  if ([...qs.keys()].length) setStatus("Champs pré-remplis via URL. Sélectionne le PDF manuellement puis Lance.", "ok");
+}
+
+applyQueryParams();
+

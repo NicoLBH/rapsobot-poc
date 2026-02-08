@@ -188,8 +188,10 @@ $("pocForm").addEventListener("submit", async (e) => {
   }
 });
 
+// ================================
+// Deep-linking via query parameters
+// ================================
 function applyQueryParams() {
-  function applyQueryParams() {
   const qs = new URLSearchParams(window.location.search);
   if (![...qs.keys()].length) return;
 
@@ -213,10 +215,11 @@ function applyQueryParams() {
   // Mode mock : ?mock=1 (défaut) ou ?mock=0
   if (qs.has("mock")) {
     const mock = qs.get("mock");
-    document.getElementById("mockMode").checked = (mock !== "0");
+    const el = document.getElementById("mockMode");
+    if (el) el.checked = (mock !== "0");
   }
 
-  // Information PDF (impossible à précharger pour raisons de sécurité)
+  // Info PDF (impossible à précharger)
   if (qs.has("pdf") && qs.get("pdf")) {
     const pdfName = qs.get("pdf");
     log(`[INFO] PDF indiqué dans l’URL : "${pdfName}"`);

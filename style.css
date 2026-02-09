@@ -39,13 +39,23 @@ a{color:inherit}
 }
 
 .brand{display:flex; gap:12px; align-items:center}
-.logo{
-  width:34px; height:34px; border-radius:10px;
+
+/* ✅ Logo image */
+.logoWrap{
+  width:40px; height:40px;
+  border-radius:12px;
   display:grid; place-items:center;
-  font-weight:800;
-  background: linear-gradient(135deg,#3b82f6,#22c55e);
-  color:#081018;
+  background: rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  overflow:hidden;
 }
+.logoImg{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+
 .title{font-weight:800; letter-spacing:.2px}
 .subtitle{font-size:12px; color:var(--muted); margin-top:2px}
 
@@ -79,6 +89,11 @@ h2{margin:0 0 12px; font-size:16px}
 }
 @media (max-width: 980px){
   .grid{grid-template-columns:1fr}
+}
+
+/* champ large (pour file input) */
+.fieldWide{
+  grid-column: 1 / -1;
 }
 
 .field{display:flex; flex-direction:column; gap:6px}

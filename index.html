@@ -8,24 +8,18 @@
 </head>
 
 <body>
-  <!-- GitHub-ish top header -->
   <header class="gh-header">
     <div class="gh-header__left">
-      <!-- Sidebar toggle (menu) -->
-      <button id="sidebarToggle" class="icon-btn" aria-label="Toggle sidebar" title="Toggle sidebar">
-        ☰
-      </button>
-
       <a class="gh-brand" href="./" aria-label="RAPSOBOT">
         <img class="gh-brand__logo" src="Logo%20minimaliste%20de%20robot%20en%20noir%20et%20blanc.png" alt="RAPSOBOT" />
         <span class="gh-brand__name">RAPSOBOT</span>
         <span class="gh-brand__sep">/</span>
         <span class="gh-brand__repo">rapsobot-poc</span>
       </a>
+    </div>
 
-      <nav class="gh-tabs" aria-label="Navigation">
-        <span class="gh-tab gh-tab--active">Issues</span>
-      </nav>
+    <div class="gh-header__center">
+      <button id="runBtnTop" class="gh-btn gh-btn--primary">Run analysis</button>
     </div>
 
     <div class="gh-header__right">
@@ -38,12 +32,12 @@
   </header>
 
   <main class="gh-page gh-page--3col">
-    <!-- LEFT: Inputs (sidebar-like, retractable) -->
+    <!-- LEFT: Inputs (retractable) -->
     <section class="gh-sidebar" aria-label="Inputs" id="sidebar">
       <div class="gh-panel__head gh-sidebar__head">
-        <h2 class="gh-panel__title">Inputs</h2>
-        <div class="gh-head__right">
-          <button id="runBtn" class="gh-btn gh-btn--primary">Run analysis</button>
+        <div class="sidebar-head-left">
+          <button id="sidebarToggle" class="icon-btn" aria-label="Toggle sidebar" title="Toggle sidebar">☰</button>
+          <h2 class="gh-panel__title">Inputs</h2>
         </div>
       </div>
 
@@ -128,11 +122,11 @@
       </div>
     </section>
 
-    <!-- MIDDLE: Results (DO NOT change style/structure except "Observation" column removed in avis list) -->
+    <!-- MIDDLE: Results (structure kept, but rendering lighter; avis header appears once) -->
     <section class="gh-panel gh-panel--results" aria-label="Results">
       <div class="gh-panel__head gh-panel__head--tight">
         <div class="issues-head">
-          <h2 class="gh-panel__title">Issues</h2>
+          <h2 class="gh-panel__title">Results</h2>
           <div class="issues-totals mono" id="issuesTotals">—</div>
         </div>
 

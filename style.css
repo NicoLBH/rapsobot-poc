@@ -1,479 +1,180 @@
-:root {
-  --bg: #0d1117;
-  --panel2: #161b22;
-  --headbg: rgb(21, 27, 35);
-  --text: #c9d1d9;
-  --muted: #8b949e;
-  --border: #30363d;
-  --border2: #21262d;
-  --accent: #58a6ff;
-  --danger: #f85149;
-  --success: #3fb950;
-  --warn: #d29922;
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RAPSOBOT PoC — UI</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
 
-  --radius: 6px;
-  --radius2: 10px;
-  --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-}
+<body>
+  <header class="gh-header">
+    <div class="gh-header__left">
+      <a class="gh-brand" href="./" aria-label="RAPSOBOT">
+        <img class="gh-brand__logo" src="Logo%20minimaliste%20de%20robot%20en%20noir%20et%20blanc.png" alt="RAPSOBOT" />
+        <span class="gh-brand__name">RAPSOBOT</span>
+        <span class="gh-brand__sep">/</span>
+        <span class="gh-brand__repo">rapsobot-poc</span>
+      </a>
+    </div>
 
-* { box-sizing: border-box; }
-html, body { height: 100%; }
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font);
-}
-.mono { font-family: var(--mono); }
+    <div class="gh-header__center">
+      <button id="runBtnTop" class="gh-btn gh-btn--primary">Run analysis</button>
+    </div>
 
-/* ===== Top header ===== */
-.gh-header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 16px;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
-}
+    <div class="gh-header__right">
+      <div class="sys-status" title="État du système">
+        <span class="sys-status__dot" id="sysDot" aria-hidden="true"></span>
+        <span class="sys-status__label" id="sysLabel">Idle</span>
+        <span class="sys-status__meta" id="sysMeta">—</span>
+      </div>
+    </div>
+  </header>
 
-.gh-header__left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
+  <main class="gh-page gh-page--3col">
+    <!-- LEFT: Inputs (retractable) -->
+    <section class="gh-sidebar" aria-label="Inputs" id="sidebar">
+      <div class="gh-panel__head gh-sidebar__head">
+        <div class="sidebar-head-left">
+          <button id="sidebarToggle" class="icon-btn" aria-label="Toggle sidebar" title="Toggle sidebar">☰</button>
+          <h2 class="gh-panel__title">Inputs</h2>
+        </div>
+      </div>
 
-.icon-btn {
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text);
-  border-radius: var(--radius);
-  padding: 6px 10px;
-  cursor: pointer;
-  font-size: 14px;
-  line-height: 1;
-}
-.icon-btn:hover { border-color: #6e7681; }
+      <div class="gh-sidebar__section">
+        <div class="gh-sidebar__sectionTitle">Paramètres projet</div>
 
-.gh-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--text);
-  text-decoration: none;
-  min-width: 0;
-}
+        <label class="gh-field">
+          <span class="gh-field__label">Commune + CP</span>
+          <input id="communeCp" class="gh-input" type="text" placeholder="ex: 74950 Scionzier" />
+        </label>
 
-.gh-brand__logo {
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  background: #fff;
-  padding: 2px;
-  object-fit: contain;
-}
+        <label class="gh-field">
+          <span class="gh-field__label">Catégorie d’importance</span>
+          <select id="importance" class="gh-input">
+            <option value="je ne sais pas">je ne sais pas</option>
+            <option value="I">I</option>
+            <option value="II">II</option>
+            <option value="III">III</option>
+            <option value="IV">IV</option>
+          </select>
+        </label>
 
-.gh-brand__name { font-weight: 700; }
-.gh-brand__sep { color: var(--muted); }
-.gh-brand__repo { color: var(--muted); }
+        <label class="gh-field">
+          <span class="gh-field__label">Classe de sol</span>
+          <select id="soilClass" class="gh-input">
+            <option value="je ne sais pas">je ne sais pas</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+            <option value="E">E</option>
+            <option value="S1">S1</option>
+            <option value="S2">S2</option>
+          </select>
+        </label>
 
-.gh-tabs { display: flex; align-items: center; gap: 8px; }
-.gh-tab {
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  color: var(--muted);
-  font-size: 13px;
-  user-select: none;
-}
-.gh-tab--active {
-  color: var(--text);
-  border-color: var(--border);
-  background: var(--panel2);
-}
+        <label class="gh-field">
+          <span class="gh-field__label">Liquéfaction</span>
+          <select id="liquefaction" class="gh-input">
+            <option value="je ne sais pas">je ne sais pas</option>
+            <option value="non">non</option>
+            <option value="oui">oui</option>
+          </select>
+        </label>
 
-.gh-header__right { display: flex; align-items: center; gap: 10px; }
+        <label class="gh-field">
+          <span class="gh-field__label">Référentiel</span>
+          <select id="referential" class="gh-input">
+            <option value="Eurocode 8">Eurocode 8</option>
+            <option value="PS-MI 89 révisées 92">PS-MI 89 révisées 92</option>
+            <option value="CP-MI Antilles">CP-MI Antilles</option>
+          </select>
+        </label>
+      </div>
 
-.sys-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--panel2);
-  font-size: 12px;
-  color: var(--muted);
-  white-space: nowrap;
-}
+      <div class="gh-sidebar__divider" role="separator" aria-hidden="true"></div>
 
-.sys-status__dot { width: 10px; height: 10px; border-radius: 999px; background: var(--muted); }
-.sys-status__label { color: var(--text); }
-.sys-status__meta { color: var(--muted); }
+      <div class="gh-sidebar__section">
+        <div class="gh-sidebar__sectionTitle">Connexion</div>
 
-/* ===== Buttons / Inputs ===== */
-.gh-btn {
-  border: 1px solid var(--border);
-  background: var(--panel2);
-  color: var(--text);
-  padding: 6px 12px;
-  border-radius: var(--radius);
-  cursor: pointer;
-  font-size: 13px;
-}
-.gh-btn:hover { border-color: #6e7681; }
+        <label class="gh-field">
+          <span class="gh-field__label">Webhook URL (n8n)</span>
+          <input id="webhookUrl" class="gh-input" type="url" placeholder="https://.../webhook-test/rapsobot-poc" />
+          <div class="gh-field__help">Peut aussi venir du query param <span class="mono">?webhookUrl=...</span></div>
+        </label>
 
-.gh-btn--primary {
-  background: var(--success);
-  border-color: rgba(0,0,0,.2);
-  color: #0d1117;
-  font-weight: 700;
-}
-.gh-btn--primary:hover { filter: brightness(0.95); }
+        <label class="gh-field">
+          <span class="gh-field__label">PDF (depuis l’ordinateur)</span>
+          <input id="pdfFile" class="gh-input" type="file" accept="application/pdf" />
+        </label>
+      </div>
 
-.gh-btn--sm { padding: 4px 10px; font-size: 12px; }
+      <div class="gh-sidebar__divider" role="separator" aria-hidden="true"></div>
 
-.gh-input {
-  width: 100%;
-  padding: 7px 10px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text);
-  outline: none;
-  font-size: 13px;
-}
-.gh-input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(88,166,255,.15);
-}
-.gh-input--sm { padding: 5px 8px; font-size: 12px; }
+      <div class="gh-sidebar__section">
+        <div class="gh-sidebar__sectionTitle">Actions</div>
+        <div class="gh-actions gh-actions--sidebar">
+          <button id="resetBtn" class="gh-btn">Reset</button>
+          <div id="runMeta" class="gh-meta mono"></div>
+        </div>
+        <div id="errorBox" class="gh-alert gh-alert--error hidden"></div>
+      </div>
+    </section>
 
-.gh-field { display: flex; flex-direction: column; gap: 6px; }
-.gh-field__label { font-size: 12px; color: var(--muted); }
-.gh-field__help { font-size: 11px; color: var(--muted); }
+    <!-- MIDDLE: Results (structure kept, but rendering lighter; avis header appears once) -->
+    <section class="gh-panel gh-panel--results" aria-label="Results">
+      <div class="gh-panel__head gh-panel__head--tight">
+        <div class="issues-head">
+          <h2 class="gh-panel__title">Results</h2>
+          <div class="issues-totals mono" id="issuesTotals">—</div>
+        </div>
 
-/* ===== Layout ===== */
-.gh-page {
-  max-width: 1500px;
-  margin: 18px auto;
-  padding: 0 16px 48px;
-  display: grid;
-  gap: 16px;
-}
+        <div class="gh-filters">
+          <label class="gh-filter">
+            <span>Verdict</span>
+            <select id="verdictFilter" class="gh-input gh-input--sm">
+              <option value="ALL">All</option>
+              <option value="KO">KO</option>
+              <option value="A_VERIFIER">A_VERIFIER</option>
+              <option value="OK">OK</option>
+            </select>
+          </label>
 
-.gh-page--3col {
-  grid-template-columns: 340px 1fr 420px;
-}
+          <label class="gh-filter">
+            <span>Search</span>
+            <input id="searchBox" class="gh-input gh-input--sm" type="text" placeholder="topic / EC8 / mot-clé…" />
+          </label>
+        </div>
+      </div>
 
-@media (max-width: 1180px) {
-  .gh-page--3col { grid-template-columns: 1fr; }
-}
+      <div id="issuesTable" class="gh-issues emptyState">Run an analysis to display situations.</div>
 
-/* Sidebar collapsed */
-body.sidebar-collapsed .gh-page--3col {
-  grid-template-columns: 0px 1fr 420px;
-}
-body.sidebar-collapsed #sidebar {
-  overflow: hidden;
-  width: 0;
-  min-width: 0;
-  padding: 0;
-  margin: 0;
-}
+      <div class="gh-footer">
+        <div class="gh-counts" id="counts">—</div>
+        <div class="gh-pagination">
+          <button id="prevPage" class="gh-btn gh-btn--sm" aria-label="Previous page">◀</button>
+          <span id="pageInfo" class="mono">1 / 1</span>
+          <button id="nextPage" class="gh-btn gh-btn--sm" aria-label="Next page">▶</button>
+        </div>
+      </div>
+    </section>
 
-/* ===== Panels ===== */
-.gh-panel {
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: var(--radius2);
-}
-.gh-panel--results { border-radius: var(--radius); }
-.gh-panel--details { border-radius: var(--radius); }
+    <!-- RIGHT: Details / Discussion -->
+    <section class="gh-panel gh-panel--details" aria-label="Details">
+      <div class="gh-panel__head gh-panel__head--tight">
+        <div class="details-head">
+          <h2 class="gh-panel__title">Details</h2>
+          <div class="details-meta mono" id="detailsMeta">—</div>
+        </div>
+      </div>
 
-.gh-panel__head {
-  padding: 12px;
-  background: var(--headbg);
-  border-bottom: 1px solid var(--border);
-  border-top-left-radius: inherit;
-  border-top-right-radius: inherit;
-}
-.gh-panel__head--tight { padding-bottom: 10px; }
+      <div class="details-body" id="detailsBody">
+        <div class="emptyState">Sélectionne une situation / un problème / un avis pour afficher les détails.</div>
+      </div>
+    </section>
+  </main>
 
-.gh-panel__title {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-/* ===== Sidebar styling ===== */
-.gh-sidebar {
-  background: transparent;
-  border: none;
-  border-radius: 0;
-}
-
-.gh-sidebar__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-}
-
-.gh-head__right { display: inline-flex; align-items: center; gap: 8px; }
-
-.gh-sidebar__section { padding: 12px 0; }
-.gh-sidebar__sectionTitle {
-  padding: 0 0 10px;
-  font-size: 12px;
-  color: var(--muted);
-  font-weight: 600;
-}
-.gh-sidebar__divider { height: 1px; background: var(--border); }
-
-.gh-actions { display: flex; align-items: center; gap: 10px; }
-.gh-actions--sidebar { padding: 0; }
-.gh-meta { font-size: 12px; color: var(--muted); }
-
-.gh-alert {
-  margin-top: 10px;
-  padding: 10px 12px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  font-size: 13px;
-}
-.gh-alert--error {
-  border-color: rgba(248,81,73,.6);
-  background: rgba(248,81,73,.08);
-  color: #ffdcd7;
-}
-.hidden { display: none; }
-
-/* ===== Filters ===== */
-.gh-filters {
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.gh-filter {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--muted);
-}
-
-/* Issues head totals */
-.issues-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-}
-.issues-totals {
-  font-size: 12px;
-  color: var(--muted);
-  white-space: nowrap;
-}
-
-/* Details head */
-.details-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-}
-.details-meta {
-  font-size: 12px;
-  color: var(--muted);
-  white-space: nowrap;
-}
-
-.details-body {
-  padding: 12px;
-}
-
-/* ===== Tables ===== */
-.gh-issues { padding: 0; }
-.emptyState { padding: 14px 12px; color: var(--muted); font-size: 13px; }
-
-.issues-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-.issues-table th,
-.issues-table td {
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
-  vertical-align: top;
-}
-.issues-table th {
-  font-size: 12px;
-  color: var(--muted);
-  text-align: left;
-  background: rgba(13,17,23,.6);
-}
-/* no hover highlight */
-.issues-table tr:hover td { background: transparent; }
-
-.row-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  color: var(--text);
-  text-decoration: none;
-}
-.row-btn__caret { width: 14px; text-align: center; color: var(--muted); }
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 8px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: rgba(110,118,129,.12);
-  font-size: 12px;
-  color: var(--muted);
-  white-space: nowrap;
-}
-.badge--p1 { color: #ffdcd7; border-color: rgba(248,81,73,.45); background: rgba(248,81,73,.12); }
-.badge--p2 { color: #ffe7b3; border-color: rgba(210,153,34,.55); background: rgba(210,153,34,.12); }
-.badge--p3 { color: #c7f0d8; border-color: rgba(63,185,80,.45); background: rgba(63,185,80,.12); }
-
-.badge--ko { color: #ffdcd7; border-color: rgba(248,81,73,.45); background: rgba(248,81,73,.10); }
-.badge--ok { color: #c7f0d8; border-color: rgba(63,185,80,.45); background: rgba(63,185,80,.10); }
-.badge--av { color: #c9d1d9; border-color: rgba(88,166,255,.40); background: rgba(88,166,255,.08); }
-
-.subrow { background: rgba(13,17,23,.25); }
-.subcell { padding: 0; border-bottom: 1px solid var(--border); }
-.subpanel { padding: 10px 12px 12px; }
-.subpanel__title { margin: 0 0 10px; font-size: 12px; color: var(--muted); }
-
-.tickets {
-  width: 100%;
-  border-collapse: collapse;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-.tickets th,
-.tickets td {
-  padding: 8px 10px;
-  border-bottom: 1px solid var(--border2);
-  vertical-align: top;
-}
-.tickets th { font-size: 12px; color: var(--muted); background: rgba(22,27,34,.8); }
-.tickets tr:hover td { background: transparent; }
-
-.ticket-msg { white-space: pre-wrap; }
-
-/* Clickable rows in tickets list */
-.clickable-row { cursor: pointer; }
-.clickable-row:hover { outline: 1px solid rgba(88,166,255,.25); outline-offset: -1px; }
-
-/* ===== Footer ===== */
-.gh-footer {
-  padding: 10px 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-.gh-counts { font-size: 12px; color: var(--muted); }
-.gh-pagination { display: inline-flex; align-items: center; gap: 10px; }
-
-/* ===== Details content blocks ===== */
-.kv {
-  display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 6px 12px;
-  margin: 10px 0 14px;
-  font-size: 13px;
-}
-.kv .k { color: var(--muted); }
-.kv .v { color: var(--text); }
-
-.hr { height: 1px; background: var(--border); margin: 12px 0; }
-
-.actions-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.gh-btn--danger {
-  border-color: rgba(248,81,73,.55);
-  background: rgba(248,81,73,.12);
-  color: #ffdcd7;
-}
-.gh-btn--success {
-  border-color: rgba(63,185,80,.45);
-  background: rgba(63,185,80,.12);
-  color: #c7f0d8;
-}
-.gh-btn--neutral {
-  border-color: rgba(88,166,255,.35);
-  background: rgba(88,166,255,.08);
-  color: var(--text);
-}
-
-.textarea {
-  width: 100%;
-  min-height: 80px;
-  resize: vertical;
-  padding: 10px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text);
-  font-size: 13px;
-  outline: none;
-}
-.textarea:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(88,166,255,.15);
-}
-
-/* Discussion */
-.thread {
-  display: grid;
-  gap: 10px;
-  margin-top: 12px;
-}
-
-.thread-item {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-
-.thread-item__head {
-  padding: 8px 10px;
-  background: rgba(22,27,34,.8);
-  border-bottom: 1px solid var(--border2);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  font-size: 12px;
-  color: var(--muted);
-}
-
-.thread-item__body {
-  padding: 10px;
-  white-space: pre-wrap;
-  font-size: 13px;
-}
+  <script src="app.js"></script>
+</body>
+</html>

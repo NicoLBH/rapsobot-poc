@@ -50,6 +50,7 @@ a{color:inherit}
   overflow:hidden;
 }
 .logoImg{
+  color:rgb(255,255,255);
   width:200px;
   height:200px;
   object-fit:contain;

@@ -12,7 +12,6 @@
   <header class="gh-header">
     <div class="gh-header__left">
       <a class="gh-brand" href="./" aria-label="RAPSOBOT">
-        <!-- Image insérée dans l'UI (fichier présent dans le repo) -->
         <img class="gh-brand__logo" src="Logo%20minimaliste%20de%20robot%20en%20noir%20et%20blanc.png" alt="RAPSOBOT" />
         <span class="gh-brand__name">RAPSOBOT</span>
         <span class="gh-brand__sep">/</span>
@@ -29,22 +28,22 @@
         <span class="sys-status__label" id="sysLabel">Idle</span>
         <span class="sys-status__meta" id="sysMeta">—</span>
       </div>
-      <button id="runBtn" class="gh-btn gh-btn--primary">Run analysis</button>
     </div>
   </header>
 
   <main class="gh-page">
-    <!-- Inputs (compact, GitHub-like) -->
-    <section class="gh-panel" aria-label="Inputs">
-      <div class="gh-panel__head">
+    <!-- LEFT: Inputs (sidebar-like) -->
+    <section class="gh-sidebar" aria-label="Inputs">
+      <div class="gh-panel__head gh-sidebar__head">
         <h2 class="gh-panel__title">Inputs</h2>
-        <div class="gh-panel__hint">
-          Le PDF est envoyé en <span class="mono">multipart/form-data</span> (champ <span class="mono">pdf</span>) +
-          <span class="mono">user_reference</span>.
+        <div class="gh-head__right">
+          <button id="runBtn" class="gh-btn gh-btn--primary">Run analysis</button>
         </div>
       </div>
 
-      <div class="gh-form">
+      <div class="gh-sidebar__section">
+        <div class="gh-sidebar__sectionTitle">Paramètres projet</div>
+
         <label class="gh-field">
           <span class="gh-field__label">Commune + CP</span>
           <input id="communeCp" class="gh-input" type="text" placeholder="ex: 74950 Scionzier" />
@@ -92,33 +91,45 @@
             <option value="CP-MI Antilles">CP-MI Antilles</option>
           </select>
         </label>
+      </div>
 
-        <label class="gh-field gh-field--wide">
+      <div class="gh-sidebar__divider" role="separator" aria-hidden="true"></div>
+
+      <div class="gh-sidebar__section">
+        <div class="gh-sidebar__sectionTitle">Connexion</div>
+
+        <label class="gh-field">
           <span class="gh-field__label">Webhook URL (n8n)</span>
           <input id="webhookUrl" class="gh-input" type="url" placeholder="https://.../webhook-test/rapsobot-poc" />
           <div class="gh-field__help">Peut aussi venir du query param <span class="mono">?webhookUrl=...</span></div>
         </label>
 
-        <!-- ✅ Upload local (bouton visible) -->
-        <label class="gh-field gh-field--wide">
+        <label class="gh-field">
           <span class="gh-field__label">PDF (depuis l’ordinateur)</span>
           <input id="pdfFile" class="gh-input" type="file" accept="application/pdf" />
         </label>
       </div>
 
-      <div class="gh-actions">
-        <button id="resetBtn" class="gh-btn">Reset</button>
-        <div class="gh-actions__spacer"></div>
-        <div id="runMeta" class="gh-meta mono"></div>
-      </div>
+      <div class="gh-sidebar__divider" role="separator" aria-hidden="true"></div>
 
-      <div id="errorBox" class="gh-alert gh-alert--error hidden"></div>
+      <div class="gh-sidebar__section">
+        <div class="gh-sidebar__sectionTitle">Actions</div>
+        <div class="gh-actions gh-actions--sidebar">
+          <button id="resetBtn" class="gh-btn">Reset</button>
+          <div id="runMeta" class="gh-meta mono"></div>
+        </div>
+        <div id="errorBox" class="gh-alert gh-alert--error hidden"></div>
+      </div>
     </section>
 
-    <!-- Results (GitHub Issues-like list with drill-down) -->
-    <section class="gh-panel" aria-label="Results">
+    <!-- RIGHT: Results -->
+    <section class="gh-panel gh-panel--results" aria-label="Results">
       <div class="gh-panel__head gh-panel__head--tight">
-        <h2 class="gh-panel__title">Issues</h2>
+        <div class="issues-head">
+          <h2 class="gh-panel__title">Issues</h2>
+          <div class="issues-totals mono" id="issuesTotals">—</div>
+        </div>
+
         <div class="gh-filters">
           <label class="gh-filter">
             <span>Verdict</span>
@@ -129,6 +140,7 @@
               <option value="OK">OK</option>
             </select>
           </label>
+
           <label class="gh-filter">
             <span>Search</span>
             <input id="searchBox" class="gh-input gh-input--sm" type="text" placeholder="topic / EC8 / mot-clé…" />

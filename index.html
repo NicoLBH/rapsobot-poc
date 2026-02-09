@@ -10,7 +10,11 @@
 <body>
   <header class="topbar">
     <div class="brand">
-      <div class="logo">R</div>
+      <!-- LOGO -->
+      <div class="logoWrap">
+        <img class="logoImg" src="logo.png" alt="RAPSOBOT" />
+      </div>
+
       <div>
         <div class="title">RAPSOBOT — PoC</div>
         <div class="subtitle">Drill-down : Situations → Problèmes → Avis (cap 200)</div>
@@ -82,7 +86,14 @@
         <label class="field">
           <span>PDF URL (optionnel)</span>
           <input id="pdfUrl" type="url" placeholder="https://.../document.pdf" />
-          <small class="hint">Si ton workflow n8n ne télécharge pas le PDF par URL, laisse vide.</small>
+          <small class="hint">Si tu upload un fichier PDF ci-dessous, ce champ peut rester vide.</small>
+        </label>
+
+        <!-- ✅ UPLOAD PDF (ordinateur) -->
+        <label class="field fieldWide">
+          <span>PDF (depuis l’ordinateur)</span>
+          <input id="pdfFile" type="file" accept="application/pdf" />
+          <small class="hint">Le PDF sera envoyé au webhook en <code>multipart/form-data</code>.</small>
         </label>
       </div>
 

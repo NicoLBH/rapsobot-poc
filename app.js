@@ -1,5 +1,5 @@
 // RAPSOBOT PoC UI — GitHub-ish "Issues" + Drill-down
-// Data contract expected from webhook (Fusion final_result):
+// Expected from webhook (Fusion final_result):
 // { status, run_id, situations[], problems[], avis[] }
 
 const qs = new URLSearchParams(location.search);
@@ -12,7 +12,7 @@ const state = {
   verdictFilter: "ALL",
   search: "",
   page: 1,
-  pageSize: 50, // pagination sur les tickets (avis) du problème ouvert
+  pageSize: 50,
 };
 
 function escapeHtml(s) {
@@ -46,7 +46,6 @@ function badgeVerdict(v) {
 }
 
 function setSystemStatus(kind, label, meta) {
-  // kind: idle | running | done | error
   const dot = el("sysDot");
   const lbl = el("sysLabel");
   const m = el("sysMeta");
@@ -77,6 +76,18 @@ function showError(msg) {
 function setRunMeta(run_id) {
   const meta = el("runMeta");
   meta.textContent = run_id ? `run_id=${run_id}` : "";
+}
+
+function setIssuesTotals(d) {
+  const node = el("issuesTotals");
+  if (!d) {
+    node.textContent = "—";
+    return;
+  }
+  const s = Array.isArray(d.situations) ? d.situations.length : 0;
+  const p = Array.isArray(d.problems) ? d.problems.length : 0;
+  const a = Array.isArray(d.avis) ? d.avis.length : 0;
+  node.textContent = `${s} situations · ${p} problèmes · ${a} avis`;
 }
 
 function readInputs() {
@@ -132,6 +143,8 @@ function render() {
   const counts = el("counts");
 
   const d = state.data;
+  setIssuesTotals(d);
+
   if (!d || !Array.isArray(d.situations) || !Array.isArray(d.problems) || !Array.isArray(d.avis)) {
     host.classList.add("emptyState");
     host.textContent = "Run an analysis to display situations.";
@@ -146,9 +159,9 @@ function render() {
   const nbSit = d.situations.length;
   const nbPb = d.problems.length;
   const nbAv = d.avis.length;
-  counts.textContent = `${nbSit} situations · ${nbPb} problèmes · ${nbAv} tickets (cap PoC: 200)`;
+  counts.textContent = `${nbSit} situations · ${nbPb} problèmes · ${nbAv} avis`;
 
-  // Pagination only applies to tickets (avis) of the expanded problem.
+  // pagination only for open problem tickets
   let expandedTickets = [];
   let expandedTicketsFiltered = [];
   let pages = 1;
@@ -167,7 +180,6 @@ function render() {
 
   el("pageInfo").textContent = `${state.page} / ${pages}`;
 
-  // Build table HTML
   const rows = [];
   rows.push(`
     <table class="issues-table">
@@ -187,7 +199,7 @@ function render() {
     const caret = isOpen ? "▾" : "▸";
 
     rows.push(`
-      <tr data-sit="${escapeHtml(s.situation_id)}">
+      <tr>
         <td><span class="${badgePriority(s.priority)}">${escapeHtml(s.priority)}</span></td>
         <td>
           <span class="row-btn" data-action="toggle-sit" data-sit="${escapeHtml(s.situation_id)}">
@@ -223,6 +235,7 @@ function render() {
       for (const pb of problems) {
         const pbOpen = pb.problem_id === state.expandedProblemId;
         const pbCaret = pbOpen ? "▾" : "▸";
+
         rows.push(`
           <tr>
             <td><span class="${badgePriority(pb.priority)}">${escapeHtml(pb.priority)}</span></td>
@@ -271,9 +284,6 @@ function render() {
                       `).join("")}
                     </tbody>
                   </table>
-                  <div style="margin-top:8px; color: var(--muted); font-size:12px;">
-                    Total tickets dans ce problème: <span class="mono">${escapeHtml(all.length)}</span>
-                  </div>
                 </div>
               </td>
             </tr>
@@ -291,15 +301,11 @@ function render() {
     }
   }
 
-  rows.push(`
-      </tbody>
-    </table>
-  `);
+  rows.push(`</tbody></table>`);
 
   host.classList.remove("emptyState");
   host.innerHTML = rows.join("");
 
-  // Wire click handlers (event delegation)
   host.querySelectorAll("[data-action='toggle-sit']").forEach((node) => {
     node.onclick = () => {
       const sitId = node.getAttribute("data-sit");
@@ -307,7 +313,6 @@ function render() {
 
       const willOpen = state.expandedSituationId !== sitId;
       state.expandedSituationId = willOpen ? sitId : null;
-      // If we close the situation, we must close the problem.
       if (!willOpen) state.expandedProblemId = null;
       state.page = 1;
       render();
@@ -340,7 +345,7 @@ async function run() {
   }
 
   if (!inp.pdfFile) {
-    showError("PDF manquant. Sélectionne un fichier PDF depuis l’ordinateur (champ obligatoire). ");
+    showError("PDF manquant. Sélectionne un fichier PDF depuis l’ordinateur.");
     setSystemStatus("error", "Erreur", "pdf manquant");
     return;
   }
@@ -405,6 +410,7 @@ function resetUI() {
   el("verdictFilter").value = "ALL";
   el("searchBox").value = "";
   if (el("pdfFile")) el("pdfFile").value = "";
+  setIssuesTotals(null);
   render();
 }
 

@@ -11,12 +11,18 @@
   <!-- GitHub-ish top header -->
   <header class="gh-header">
     <div class="gh-header__left">
+      <!-- Sidebar toggle (menu) -->
+      <button id="sidebarToggle" class="icon-btn" aria-label="Toggle sidebar" title="Toggle sidebar">
+        ☰
+      </button>
+
       <a class="gh-brand" href="./" aria-label="RAPSOBOT">
         <img class="gh-brand__logo" src="Logo%20minimaliste%20de%20robot%20en%20noir%20et%20blanc.png" alt="RAPSOBOT" />
         <span class="gh-brand__name">RAPSOBOT</span>
         <span class="gh-brand__sep">/</span>
         <span class="gh-brand__repo">rapsobot-poc</span>
       </a>
+
       <nav class="gh-tabs" aria-label="Navigation">
         <span class="gh-tab gh-tab--active">Issues</span>
       </nav>
@@ -31,9 +37,9 @@
     </div>
   </header>
 
-  <main class="gh-page">
-    <!-- LEFT: Inputs (sidebar-like) -->
-    <section class="gh-sidebar" aria-label="Inputs">
+  <main class="gh-page gh-page--3col">
+    <!-- LEFT: Inputs (sidebar-like, retractable) -->
+    <section class="gh-sidebar" aria-label="Inputs" id="sidebar">
       <div class="gh-panel__head gh-sidebar__head">
         <h2 class="gh-panel__title">Inputs</h2>
         <div class="gh-head__right">
@@ -122,7 +128,7 @@
       </div>
     </section>
 
-    <!-- RIGHT: Results -->
+    <!-- MIDDLE: Results (DO NOT change style/structure except "Observation" column removed in avis list) -->
     <section class="gh-panel gh-panel--results" aria-label="Results">
       <div class="gh-panel__head gh-panel__head--tight">
         <div class="issues-head">
@@ -157,6 +163,20 @@
           <span id="pageInfo" class="mono">1 / 1</span>
           <button id="nextPage" class="gh-btn gh-btn--sm" aria-label="Next page">▶</button>
         </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: Details / Discussion -->
+    <section class="gh-panel gh-panel--details" aria-label="Details">
+      <div class="gh-panel__head gh-panel__head--tight">
+        <div class="details-head">
+          <h2 class="gh-panel__title">Details</h2>
+          <div class="details-meta mono" id="detailsMeta">—</div>
+        </div>
+      </div>
+
+      <div class="details-body" id="detailsBody">
+        <div class="emptyState">Sélectionne une situation / un problème / un avis pour afficher les détails.</div>
       </div>
     </section>
   </main>

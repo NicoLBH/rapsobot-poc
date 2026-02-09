@@ -8,35 +8,51 @@
 </head>
 
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <!-- LOGO -->
-      <div class="logoWrap">
-        <img class="logoImg" src="logo.png" alt="RAPSOBOT" />
-      </div>
-
-      <div>
-        <div class="title">RAPSOBOT — PoC</div>
-        <div class="subtitle">Drill-down : Situations → Problèmes → Avis (cap 200)</div>
-      </div>
+  <!-- GitHub-ish top header -->
+  <header class="gh-header">
+    <div class="gh-header__left">
+      <a class="gh-brand" href="./" aria-label="RAPSOBOT">
+        <!-- Image insérée dans l'UI (fichier présent dans le repo) -->
+        <img class="gh-brand__logo" src="Logo%20minimaliste%20de%20robot%20en%20noir%20et%20blanc.png" alt="RAPSOBOT" />
+        <span class="gh-brand__name">RAPSOBOT</span>
+        <span class="gh-brand__sep">/</span>
+        <span class="gh-brand__repo">rapsobot-poc</span>
+      </a>
+      <nav class="gh-tabs" aria-label="Navigation">
+        <span class="gh-tab gh-tab--active">Issues</span>
+      </nav>
     </div>
 
-    <div class="pill" id="statusPill">—</div>
+    <div class="gh-header__right">
+      <div class="sys-status" title="État du système">
+        <span class="sys-status__dot" id="sysDot" aria-hidden="true"></span>
+        <span class="sys-status__label" id="sysLabel">Idle</span>
+        <span class="sys-status__meta" id="sysMeta">—</span>
+      </div>
+      <button id="runBtn" class="gh-btn gh-btn--primary">Run analysis</button>
+    </div>
   </header>
 
-  <main class="container">
-    <section class="card">
-      <h2>Entrées</h2>
+  <main class="gh-page">
+    <!-- Inputs (compact, GitHub-like) -->
+    <section class="gh-panel" aria-label="Inputs">
+      <div class="gh-panel__head">
+        <h2 class="gh-panel__title">Inputs</h2>
+        <div class="gh-panel__hint">
+          Le PDF est envoyé en <span class="mono">multipart/form-data</span> (champ <span class="mono">pdf</span>) +
+          <span class="mono">user_reference</span>.
+        </div>
+      </div>
 
-      <div class="grid">
-        <label class="field">
-          <span>Commune + CP</span>
-          <input id="communeCp" type="text" placeholder="ex: 74950 Scionzier" />
+      <div class="gh-form">
+        <label class="gh-field">
+          <span class="gh-field__label">Commune + CP</span>
+          <input id="communeCp" class="gh-input" type="text" placeholder="ex: 74950 Scionzier" />
         </label>
 
-        <label class="field">
-          <span>Catégorie d’importance</span>
-          <select id="importance">
+        <label class="gh-field">
+          <span class="gh-field__label">Catégorie d’importance</span>
+          <select id="importance" class="gh-input">
             <option value="je ne sais pas">je ne sais pas</option>
             <option value="I">I</option>
             <option value="II">II</option>
@@ -45,9 +61,9 @@
           </select>
         </label>
 
-        <label class="field">
-          <span>Classe de sol</span>
-          <select id="soilClass">
+        <label class="gh-field">
+          <span class="gh-field__label">Classe de sol</span>
+          <select id="soilClass" class="gh-input">
             <option value="je ne sais pas">je ne sais pas</option>
             <option value="A">A</option>
             <option value="B">B</option>
@@ -59,104 +75,77 @@
           </select>
         </label>
 
-        <label class="field">
-          <span>Liquéfaction</span>
-          <select id="liquefaction">
+        <label class="gh-field">
+          <span class="gh-field__label">Liquéfaction</span>
+          <select id="liquefaction" class="gh-input">
             <option value="je ne sais pas">je ne sais pas</option>
             <option value="non">non</option>
             <option value="oui">oui</option>
           </select>
         </label>
 
-        <label class="field">
-          <span>Référentiel</span>
-          <select id="referential">
+        <label class="gh-field">
+          <span class="gh-field__label">Référentiel</span>
+          <select id="referential" class="gh-input">
             <option value="Eurocode 8">Eurocode 8</option>
             <option value="PS-MI 89 révisées 92">PS-MI 89 révisées 92</option>
             <option value="CP-MI Antilles">CP-MI Antilles</option>
           </select>
         </label>
 
-        <label class="field">
-          <span>Webhook URL (n8n)</span>
-          <input id="webhookUrl" type="url" placeholder="https://.../webhook/rapsobot-poc" />
-          <small class="hint">Peut aussi venir du query param <code>webhookUrl</code>.</small>
+        <label class="gh-field gh-field--wide">
+          <span class="gh-field__label">Webhook URL (n8n)</span>
+          <input id="webhookUrl" class="gh-input" type="url" placeholder="https://.../webhook-test/rapsobot-poc" />
+          <div class="gh-field__help">Peut aussi venir du query param <span class="mono">?webhookUrl=...</span></div>
         </label>
 
-        <label class="field">
-          <span>PDF URL (optionnel)</span>
-          <input id="pdfUrl" type="url" placeholder="https://.../document.pdf" />
-          <small class="hint">Si tu upload un fichier PDF ci-dessous, ce champ peut rester vide.</small>
-        </label>
-
-        <!-- ✅ UPLOAD PDF (ordinateur) -->
-        <label class="field fieldWide">
-          <span>PDF (depuis l’ordinateur)</span>
-          <input id="pdfFile" type="file" accept="application/pdf" />
-          <small class="hint">Le PDF sera envoyé au webhook en <code>multipart/form-data</code>.</small>
+        <!-- ✅ Upload local (bouton visible) -->
+        <label class="gh-field gh-field--wide">
+          <span class="gh-field__label">PDF (depuis l’ordinateur)</span>
+          <input id="pdfFile" class="gh-input" type="file" accept="application/pdf" />
         </label>
       </div>
 
-      <div class="actions">
-        <button id="runBtn" class="btn primary">Lancer l’analyse</button>
-        <button id="resetBtn" class="btn">Réinitialiser</button>
+      <div class="gh-actions">
+        <button id="resetBtn" class="gh-btn">Reset</button>
+        <div class="gh-actions__spacer"></div>
+        <div id="runMeta" class="gh-meta mono"></div>
       </div>
 
-      <div id="runMeta" class="meta"></div>
-      <div id="errorBox" class="error hidden"></div>
+      <div id="errorBox" class="gh-alert gh-alert--error hidden"></div>
     </section>
 
-    <section class="split">
-      <section class="card">
-        <div class="cardHeader">
-          <h2>Situations</h2>
-          <div class="small" id="sitCount">—</div>
+    <!-- Results (GitHub Issues-like list with drill-down) -->
+    <section class="gh-panel" aria-label="Results">
+      <div class="gh-panel__head gh-panel__head--tight">
+        <h2 class="gh-panel__title">Issues</h2>
+        <div class="gh-filters">
+          <label class="gh-filter">
+            <span>Verdict</span>
+            <select id="verdictFilter" class="gh-input gh-input--sm">
+              <option value="ALL">All</option>
+              <option value="KO">KO</option>
+              <option value="A_VERIFIER">A_VERIFIER</option>
+              <option value="OK">OK</option>
+            </select>
+          </label>
+          <label class="gh-filter">
+            <span>Search</span>
+            <input id="searchBox" class="gh-input gh-input--sm" type="text" placeholder="topic / EC8 / mot-clé…" />
+          </label>
         </div>
-        <div id="situations" class="list emptyState">Lance une analyse pour afficher les situations.</div>
-      </section>
-
-      <section class="card">
-        <div class="cardHeader">
-          <h2>Problèmes</h2>
-          <div class="small" id="pbCount">—</div>
-        </div>
-        <div id="problems" class="list emptyState">Sélectionne une situation.</div>
-      </section>
-    </section>
-
-    <section class="card">
-      <div class="cardHeader">
-        <h2>Avis</h2>
-        <div class="small" id="avCount">—</div>
       </div>
 
-      <div class="toolbar">
-        <label class="chip">
-          Verdict
-          <select id="verdictFilter">
-            <option value="ALL">Tous</option>
-            <option value="KO">KO</option>
-            <option value="A_VERIFIER">A_VERIFIER</option>
-            <option value="OK">OK</option>
-          </select>
-        </label>
+      <div id="issuesTable" class="gh-issues emptyState">Run an analysis to display situations.</div>
 
-        <label class="chip">
-          Recherche
-          <input id="searchBox" type="text" placeholder="topic / EC8 / mot-clé..." />
-        </label>
-
-        <div class="spacer"></div>
-
-        <div class="chip">
-          Page
-          <button id="prevPage" class="btn small">◀</button>
+      <div class="gh-footer">
+        <div class="gh-counts" id="counts">—</div>
+        <div class="gh-pagination">
+          <button id="prevPage" class="gh-btn gh-btn--sm" aria-label="Previous page">◀</button>
           <span id="pageInfo" class="mono">1 / 1</span>
-          <button id="nextPage" class="btn small">▶</button>
+          <button id="nextPage" class="gh-btn gh-btn--sm" aria-label="Next page">▶</button>
         </div>
       </div>
-
-      <div id="avis" class="tableWrap emptyState">Sélectionne un problème.</div>
     </section>
   </main>
 

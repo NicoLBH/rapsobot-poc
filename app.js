@@ -3,7 +3,6 @@
 // { status, run_id, situations[], problems[], avis[] }
 
 const qs = new URLSearchParams(location.search);
-
 const el = (id) => document.getElementById(id);
 
 const state = {
@@ -258,6 +257,7 @@ function showError(msg) {
 }
 
 function readInputs() {
+  const f = el("pdfFile")?.files?.[0] || null;
   return {
     communeCp: el("communeCp").value.trim(),
     importance: el("importance").value,
@@ -266,11 +266,11 @@ function readInputs() {
     referential: el("referential").value,
     webhookUrl: el("webhookUrl").value.trim(),
     pdfUrl: el("pdfUrl").value.trim(),
+    pdfFile: f,
   };
 }
 
 function applyQueryParamsToForm() {
-  // Supporte tes anciens paramètres si déjà utilisés.
   el("communeCp").value = qs.get("communeCp") || qs.get("commune_cp") || "";
   el("importance").value = qs.get("importance") || "je ne sais pas";
   el("soilClass").value = qs.get("soilClass") || qs.get("soil_class") || "je ne sais pas";
@@ -293,8 +293,6 @@ async function run() {
     return;
   }
 
-  // Payload attendu côté n8n : tu as déjà un user_reference JSON string.
-  // Ici on envoie un JSON "user_reference" directement (n8n peut le JSON.parse).
   const user_reference = {
     commune_cp: inp.communeCp,
     importance: inp.importance,
@@ -304,26 +302,36 @@ async function run() {
     pdfUrl: inp.pdfUrl || undefined
   };
 
-  const payload = {
-    user_reference: JSON.stringify(user_reference)
-  };
-
   try {
-    const res = await fetch(inp.webhookUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
+    let res;
+
+    // ✅ Si un fichier est sélectionné -> multipart/form-data (recommandé)
+    if (inp.pdfFile) {
+      const form = new FormData();
+      form.append("user_reference", JSON.stringify(user_reference));
+      form.append("pdf", inp.pdfFile, inp.pdfFile.name);
+
+      res = await fetch(inp.webhookUrl, {
+        method: "POST",
+        body: form
+      });
+    } else {
+      // Sinon -> JSON (comme avant)
+      const payload = { user_reference: JSON.stringify(user_reference) };
+      res = await fetch(inp.webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+    }
 
     const text = await res.text();
     let data;
     try { data = JSON.parse(text); }
     catch { throw new Error(`Réponse non-JSON du webhook. Début: ${text.slice(0, 200)}`); }
 
-    // Tolérance si ton n8n renvoie {final_result:{...}}
     const final = data.final_result || data;
 
-    // Validation minimale
     if (!final || typeof final !== "object") throw new Error("Réponse vide/invalide.");
     if (!Array.isArray(final.situations) || !Array.isArray(final.problems) || !Array.isArray(final.avis)) {
       throw new Error("Le webhook ne renvoie pas (situations, problems, avis). Vérifie le node Fusion (final_result).");
@@ -355,6 +363,8 @@ function resetUI() {
   setRunMeta("");
   state.data = null;
   resetSelection();
+
+  // reset affichage
   el("situations").classList.add("emptyState");
   el("situations").textContent = "Lance une analyse pour afficher les situations.";
   el("problems").classList.add("emptyState");
@@ -365,6 +375,9 @@ function resetUI() {
   el("pbCount").textContent = "—";
   el("avCount").textContent = "—";
   el("pageInfo").textContent = "1 / 1";
+
+  // reset file input
+  if (el("pdfFile")) el("pdfFile").value = "";
 }
 
 function wireEvents() {

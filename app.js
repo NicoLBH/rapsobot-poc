@@ -1,229 +1,398 @@
-// app.js (RAPSOBOT PoC - Phase 1/2)
+// RAPSOBOT PoC UI — Drill-down Situations -> Problems -> Avis
+// Expects API response shape:
+// { status, run_id, situations[], problems[], avis[] }
 
-const $ = (id) => document.getElementById(id);
+const qs = new URLSearchParams(location.search);
 
-function setStatus(text, kind = "muted") {
-  const el = $("status");
-  el.className = "status " + (kind === "ok" ? "ok" : kind === "err" ? "err" : "muted");
-  el.textContent = text;
+const el = (id) => document.getElementById(id);
+
+const state = {
+  data: null,
+  selectedSituationId: null,
+  selectedProblemId: null,
+  verdictFilter: "ALL",
+  search: "",
+  page: 1,
+  pageSize: 20,
+};
+
+function escapeHtml(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
 }
 
-function log(line) {
-  const el = $("log");
-  el.textContent += (el.textContent ? "\n" : "") + line;
+function indexBy(arr, key) {
+  const m = new Map();
+  for (const x of (arr || [])) m.set(x[key], x);
+  return m;
 }
 
-function getInputs() {
-  return {
-    commune_cp: $("communeCp").value.trim(),
-    importance: $("importance").value,
-    soil_class: $("soilClass").value,
-    liquefaction: $("liquefaction").value,
-    referential: $("referential").value
-  };
+function setStatusPill(status) {
+  const pill = el("statusPill");
+  pill.textContent = status || "—";
+  pill.classList.remove("ok", "todo");
+  if (status === "OK") pill.classList.add("ok");
+  else if (status) pill.classList.add("todo");
 }
 
-function validateInputs(inputs, file) {
-  const missing = Object.entries(inputs).filter(([_, v]) => !v);
-  if (!inputs.commune_cp) missing.push(["commune_cp", ""]);
-  if (missing.length) throw new Error("Champs manquants : " + missing.map(([k]) => k).join(", "));
-  if (!file) throw new Error("PDF manquant.");
-  if (file.type !== "application/pdf") throw new Error("Le fichier doit être un PDF.");
-  if (file.size > 8 * 1024 * 1024) throw new Error("PDF trop volumineux (> 8 Mo) pour ce PoC.");
+function badgeClass(p) {
+  const v = String(p || "").toUpperCase();
+  if (v === "P1") return "p1";
+  if (v === "P2") return "p2";
+  return "p3";
 }
 
-function escapeHtml(str) {
-  return (str ?? "").toString()
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+function resetSelection() {
+  state.selectedSituationId = null;
+  state.selectedProblemId = null;
+  state.page = 1;
 }
 
-function render(data) {
-  const root = $("rendered");
-  root.innerHTML = "";
+function getSelectedSituation() {
+  return (state.data?.situations || []).find(s => s.situation_id === state.selectedSituationId) || null;
+}
 
-  if (!data || !Array.isArray(data.situations)) {
-    root.innerHTML = `<p class="muted">Aucune “situations[]” dans la réponse.</p>`;
+function getSelectedProblem() {
+  return (state.data?.problems || []).find(p => p.problem_id === state.selectedProblemId) || null;
+}
+
+function computeAvisForProblem(pb) {
+  if (!pb) return [];
+  const avById = indexBy(state.data?.avis || [], "avis_id");
+  return (pb.avis_ids || []).map(id => avById.get(id)).filter(Boolean);
+}
+
+function applyAvisFilters(list) {
+  let out = list;
+
+  if (state.verdictFilter !== "ALL") {
+    out = out.filter(a => String(a.verdict || "").toUpperCase() === state.verdictFilter);
+  }
+
+  const q = state.search.trim().toLowerCase();
+  if (q) {
+    out = out.filter(a => {
+      const blob = `${a.topic || ""} ${a.message || ""} ${a.source || ""}`.toLowerCase();
+      return blob.includes(q);
+    });
+  }
+
+  return out;
+}
+
+function paginate(list) {
+  const total = list.length;
+  const pages = Math.max(1, Math.ceil(total / state.pageSize));
+  state.page = Math.min(state.page, pages);
+
+  const start = (state.page - 1) * state.pageSize;
+  const end = start + state.pageSize;
+  return { total, pages, slice: list.slice(start, end) };
+}
+
+function renderSituations() {
+  const d = state.data;
+  const sitEl = el("situations");
+  if (!d?.situations?.length) {
+    sitEl.classList.add("emptyState");
+    sitEl.textContent = "Aucune situation.";
+    el("sitCount").textContent = "0";
     return;
   }
 
-  for (const sit of data.situations) {
-    const div = document.createElement("div");
-    div.className = "situation";
+  el("sitCount").textContent = `${d.situations.length}`;
 
-    div.innerHTML = `
-      <div>
-        <span class="badge">${escapeHtml(sit.priority || "P?")}</span>
-        <span class="badge">${escapeHtml(sit.status || "")}</span>
-        <strong>${escapeHtml(sit.title || "Situation")}</strong>
-      </div>
-      <div class="kpi">
-        <div><span class="muted">Impact :</span> ${escapeHtml(sit.impact || "-")}</div>
-        <div><span class="muted">Action :</span> ${escapeHtml(sit.action || "-")}</div>
+  sitEl.classList.remove("emptyState");
+  sitEl.innerHTML = d.situations.map(s => {
+    const active = s.situation_id === state.selectedSituationId ? "active" : "";
+    return `
+      <div class="item ${active}" data-sit="${escapeHtml(s.situation_id)}">
+        <div class="itemTop">
+          <div class="badge ${badgeClass(s.priority)}">${escapeHtml(s.priority)}</div>
+          <div class="small mono">${escapeHtml(s.situation_id)}</div>
+        </div>
+        <div class="subline">${escapeHtml(s.title || "")}</div>
+        <div class="subline">${(s.problem_ids || []).length} problèmes</div>
       </div>
     `;
+  }).join("");
 
-    const problems = Array.isArray(sit.problems) ? sit.problems : [];
-    for (const pb of problems) {
-      const pbEl = document.createElement("div");
-      pbEl.className = "problem";
-      pbEl.innerHTML = `
-        <div>
-          <span class="badge">${escapeHtml(pb.code || "")}</span>
-          <strong>${escapeHtml(pb.summary || "Problème")}</strong>
-        </div>
-      `;
+  sitEl.querySelectorAll("[data-sit]").forEach(x => {
+    x.onclick = () => {
+      state.selectedSituationId = x.getAttribute("data-sit");
+      state.selectedProblemId = null;
+      state.page = 1;
+      renderAll();
+    };
+  });
+}
 
-      const reviews = Array.isArray(pb.reviews) ? pb.reviews : [];
-      for (const rv of reviews) {
-        const ev = Array.isArray(rv.evidence) ? rv.evidence : [];
-        const evHtml = ev.map(e => `<li>p.${escapeHtml(e.page)} — “${escapeHtml(e.quote)}”</li>`).join("");
+function renderProblems() {
+  const d = state.data;
+  const pbEl = el("problems");
+  const sit = getSelectedSituation();
 
-        const rvEl = document.createElement("div");
-        rvEl.className = "review";
-        rvEl.innerHTML = `
-          <div class="meta">
-            <span class="badge">Verdict: ${escapeHtml(rv.verdict || "")}</span>
-            <span class="badge">${escapeHtml(rv.referential || "")}</span>
-          </div>
-          <div>${escapeHtml(rv.comment || "")}</div>
-          ${ev.length ? `<ul class="muted">${evHtml}</ul>` : ""}
-        `;
-        pbEl.appendChild(rvEl);
-      }
-
-      // Interaction “humain” (Phase 1 : UI only)
-      const feedback = document.createElement("div");
-      feedback.style.marginTop = "8px";
-      feedback.innerHTML = `
-        <label>Commentaire (refus / relance)
-          <input placeholder="Ex: Justifier la classe de sol (référence étude géotechnique)..." />
-        </label>
-        <div class="row two" style="margin-top:8px">
-          <button type="button" data-action="refuse">Refuser</button>
-          <button type="button" data-action="relaunch">Relancer</button>
-        </div>
-      `;
-      feedback.addEventListener("click", (e) => {
-        const btn = e.target.closest("button");
-        if (!btn) return;
-        const input = feedback.querySelector("input").value.trim();
-        log(`[FEEDBACK] action=${btn.dataset.action} problem_id=${pb.problem_id || "?"} comment="${input}"`);
-        alert("Phase 1 : feedback loggé (pas encore envoyé au backend).");
-      });
-
-      pbEl.appendChild(feedback);
-      div.appendChild(pbEl);
-    }
-
-    root.appendChild(div);
+  if (!sit) {
+    pbEl.classList.add("emptyState");
+    pbEl.textContent = "Sélectionne une situation.";
+    el("pbCount").textContent = "—";
+    return;
   }
+
+  const pbById = indexBy(d.problems || [], "problem_id");
+  const list = (sit.problem_ids || []).map(id => pbById.get(id)).filter(Boolean);
+
+  el("pbCount").textContent = `${list.length}`;
+
+  if (!list.length) {
+    pbEl.classList.add("emptyState");
+    pbEl.textContent = "Aucun problème dans cette situation.";
+    return;
+  }
+
+  pbEl.classList.remove("emptyState");
+  pbEl.innerHTML = list.map(pb => {
+    const active = pb.problem_id === state.selectedProblemId ? "active" : "";
+    return `
+      <div class="item ${active}" data-pb="${escapeHtml(pb.problem_id)}">
+        <div class="itemTop">
+          <div class="badge ${badgeClass(pb.priority)}">${escapeHtml(pb.priority)}</div>
+          <div class="small mono">${escapeHtml(pb.problem_id)}</div>
+        </div>
+        <div class="subline"><b>${escapeHtml(pb.topic || "Non classé")}</b></div>
+        <div class="subline">${(pb.avis_ids || []).length} avis</div>
+      </div>
+    `;
+  }).join("");
+
+  pbEl.querySelectorAll("[data-pb]").forEach(x => {
+    x.onclick = () => {
+      state.selectedProblemId = x.getAttribute("data-pb");
+      state.page = 1;
+      renderAll();
+    };
+  });
 }
 
-async function loadMock() {
-  const res = await fetch("samples/response.mock.json", { cache: "no-store" });
-  if (!res.ok) throw new Error("Impossible de charger samples/response.mock.json");
-  return await res.json();
+function renderAvis() {
+  const avEl = el("avis");
+  const pb = getSelectedProblem();
+
+  if (!pb) {
+    avEl.classList.add("emptyState");
+    avEl.textContent = "Sélectionne un problème.";
+    el("avCount").textContent = "—";
+    el("pageInfo").textContent = "1 / 1";
+    return;
+  }
+
+  const all = computeAvisForProblem(pb);
+  const filtered = applyAvisFilters(all);
+  const { total, pages, slice } = paginate(filtered);
+
+  el("avCount").textContent = `${total} (cap PoC: 200)`;
+  el("pageInfo").textContent = `${state.page} / ${pages}`;
+
+  if (!total) {
+    avEl.classList.add("emptyState");
+    avEl.textContent = "Aucun avis (après filtres).";
+    return;
+  }
+
+  avEl.classList.remove("emptyState");
+  avEl.innerHTML = `
+    <div class="tableWrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Sev</th>
+            <th>Verdict</th>
+            <th>Thème</th>
+            <th>Observation (incl. EC8)</th>
+            <th>Source</th>
+            <th class="mono">avis_id</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${slice.map(a => `
+            <tr>
+              <td><span class="badge ${badgeClass(a.severity)}">${escapeHtml(a.severity)}</span></td>
+              <td>${escapeHtml(a.verdict)}</td>
+              <td>${escapeHtml(a.topic)}</td>
+              <td>${escapeHtml(a.message || "")}</td>
+              <td>${escapeHtml(a.source)}</td>
+              <td class="mono">${escapeHtml(a.avis_id)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
 }
 
-async function callWebhook(webhookUrl, inputs, file) {
-  const fd = new FormData();
-  fd.append("pdf", file, file.name);
-  fd.append("user_reference", JSON.stringify(inputs));
-
-  const res = await fetch(webhookUrl, { method: "POST", body: fd });
-
-  const text = await res.text();
-  if (!res.ok) throw new Error(`Webhook error ${res.status}: ${text.slice(0, 400)}`);
-
-  try { return JSON.parse(text); }
-  catch { return { raw: text }; }
+function renderAll() {
+  renderSituations();
+  renderProblems();
+  renderAvis();
 }
 
-function showRaw(data) {
-  $("raw").textContent = JSON.stringify(data, null, 2);
-  $("rawBox").open = $("showRaw").checked;
+function setRunMeta(run_id) {
+  const meta = el("runMeta");
+  if (!run_id) {
+    meta.textContent = "";
+    return;
+  }
+  meta.innerHTML = `Run: <span class="mono">${escapeHtml(run_id)}</span>`;
 }
 
-function applyQueryParams() {
-  const qs = new URLSearchParams(window.location.search);
-  if (![...qs.keys()].length) return;
+function showError(msg) {
+  const box = el("errorBox");
+  if (!msg) {
+    box.classList.add("hidden");
+    box.textContent = "";
+    return;
+  }
+  box.classList.remove("hidden");
+  box.textContent = msg;
+}
 
-  const setIfPresent = (inputId, paramName) => {
-    if (qs.has(paramName) && qs.get(paramName)) {
-      const el = document.getElementById(inputId);
-      if (el) el.value = qs.get(paramName);
-    }
+function readInputs() {
+  return {
+    communeCp: el("communeCp").value.trim(),
+    importance: el("importance").value,
+    soilClass: el("soilClass").value,
+    liquefaction: el("liquefaction").value,
+    referential: el("referential").value,
+    webhookUrl: el("webhookUrl").value.trim(),
+    pdfUrl: el("pdfUrl").value.trim(),
+  };
+}
+
+function applyQueryParamsToForm() {
+  // Supporte tes anciens paramètres si déjà utilisés.
+  el("communeCp").value = qs.get("communeCp") || qs.get("commune_cp") || "";
+  el("importance").value = qs.get("importance") || "je ne sais pas";
+  el("soilClass").value = qs.get("soilClass") || qs.get("soil_class") || "je ne sais pas";
+  el("liquefaction").value = qs.get("liquefaction") || "je ne sais pas";
+  el("referential").value = qs.get("referential") || qs.get("referential_name") || "Eurocode 8";
+  el("webhookUrl").value = qs.get("webhookUrl") || "";
+  el("pdfUrl").value = qs.get("pdf") || qs.get("pdfUrl") || "";
+}
+
+async function run() {
+  showError("");
+  setStatusPill("…");
+  setRunMeta("");
+
+  const inp = readInputs();
+
+  if (!inp.webhookUrl) {
+    showError("Webhook URL manquant. Renseigne-le dans le champ (ou via ?webhookUrl=...).");
+    setStatusPill("—");
+    return;
+  }
+
+  // Payload attendu côté n8n : tu as déjà un user_reference JSON string.
+  // Ici on envoie un JSON "user_reference" directement (n8n peut le JSON.parse).
+  const user_reference = {
+    commune_cp: inp.communeCp,
+    importance: inp.importance,
+    soilClass: inp.soilClass,
+    liquefaction: inp.liquefaction,
+    referential: inp.referential,
+    pdfUrl: inp.pdfUrl || undefined
   };
 
-  setIfPresent("communeCp", "communeCp");
-  setIfPresent("importance", "importance");
-  setIfPresent("soilClass", "soilClass");
-  setIfPresent("liquefaction", "liquefaction");
-  setIfPresent("referential", "referential");
-  setIfPresent("webhookUrl", "webhookUrl");
-
-  if (qs.has("mock")) {
-    const mock = qs.get("mock");
-    const el = $("mockMode");
-    if (el) el.checked = (mock !== "0");
-  }
-
-  if (qs.has("pdf") && qs.get("pdf")) {
-    const pdfName = qs.get("pdf");
-    log(`[INFO] PDF indiqué dans l’URL : "${pdfName}"`);
-    log(`[INFO] Sélection manuelle du PDF obligatoire (contrainte navigateur).`);
-  }
-
-  setStatus("Champs pré-remplis via URL. Sélectionne le PDF manuellement puis clique sur Lancer.", "ok");
-}
-
-// ---- Wire UI events ----
-
-$("showRaw").addEventListener("change", () => {
-  $("rawBox").open = $("showRaw").checked;
-});
-
-$("pocForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  $("log").textContent = "";
+  const payload = {
+    user_reference: JSON.stringify(user_reference)
+  };
 
   try {
-    setStatus("Exécution…");
-    const inputs = getInputs();
-    const file = $("pdf").files?.[0];
+    const res = await fetch(inp.webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
 
-    validateInputs(inputs, file);
-    log("[INPUTS] " + JSON.stringify(inputs));
-    log("[FILE] " + file.name + " (" + Math.round(file.size / 1024) + " Ko)");
-
+    const text = await res.text();
     let data;
-    if ($("mockMode").checked) {
-      log("[MODE] mock");
-      data = await loadMock();
-    } else {
-      const webhookUrl = $("webhookUrl").value.trim();
-      if (!webhookUrl) throw new Error("Webhook n8n manquant (désactive mock ou renseigne l’URL).");
-      log("[MODE] webhook");
-      data = await callWebhook(webhookUrl, inputs, file);
+    try { data = JSON.parse(text); }
+    catch { throw new Error(`Réponse non-JSON du webhook. Début: ${text.slice(0, 200)}`); }
+
+    // Tolérance si ton n8n renvoie {final_result:{...}}
+    const final = data.final_result || data;
+
+    // Validation minimale
+    if (!final || typeof final !== "object") throw new Error("Réponse vide/invalide.");
+    if (!Array.isArray(final.situations) || !Array.isArray(final.problems) || !Array.isArray(final.avis)) {
+      throw new Error("Le webhook ne renvoie pas (situations, problems, avis). Vérifie le node Fusion (final_result).");
     }
 
-    // Compat n8n : si la réponse est { response: {...} }, on unwrap
-    if (data && typeof data === "object" && data.response) data = data.response;
+    state.data = final;
+    state.selectedSituationId = final.situations[0]?.situation_id || null;
+    state.selectedProblemId = null;
+    state.page = 1;
 
-    showRaw(data);
-    render(data);
-    setStatus("Terminé.", "ok");
+    setStatusPill(final.status || "OK");
+    setRunMeta(final.run_id || "");
+    renderAll();
 
-  } catch (err) {
-    setStatus("Erreur : " + (err?.message || err), "err");
-    log("[ERROR] " + (err?.stack || err));
+  } catch (e) {
+    showError(e.message || String(e));
+    setStatusPill("ERREUR");
+    resetSelection();
+    state.data = null;
+    el("situations").textContent = "Erreur : voir ci-dessus.";
+    el("problems").textContent = "—";
+    el("avis").textContent = "—";
   }
-});
+}
 
-// run once
-applyQueryParams();
+function resetUI() {
+  showError("");
+  setStatusPill("—");
+  setRunMeta("");
+  state.data = null;
+  resetSelection();
+  el("situations").classList.add("emptyState");
+  el("situations").textContent = "Lance une analyse pour afficher les situations.";
+  el("problems").classList.add("emptyState");
+  el("problems").textContent = "Sélectionne une situation.";
+  el("avis").classList.add("emptyState");
+  el("avis").textContent = "Sélectionne un problème.";
+  el("sitCount").textContent = "—";
+  el("pbCount").textContent = "—";
+  el("avCount").textContent = "—";
+  el("pageInfo").textContent = "1 / 1";
+}
 
+function wireEvents() {
+  el("runBtn").onclick = run;
+  el("resetBtn").onclick = () => { resetUI(); };
+
+  el("verdictFilter").onchange = (ev) => {
+    state.verdictFilter = ev.target.value;
+    state.page = 1;
+    renderAvis();
+  };
+  el("searchBox").oninput = (ev) => {
+    state.search = ev.target.value;
+    state.page = 1;
+    renderAvis();
+  };
+
+  el("prevPage").onclick = () => {
+    state.page = Math.max(1, state.page - 1);
+    renderAvis();
+  };
+  el("nextPage").onclick = () => {
+    state.page = state.page + 1;
+    renderAvis();
+  };
+}
+
+// Boot
+applyQueryParamsToForm();
+wireEvents();
+resetUI();

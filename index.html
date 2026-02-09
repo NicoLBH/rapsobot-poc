@@ -3,132 +3,152 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>RAPSOBOT – PoC (Phase 1)</title>
+  <title>RAPSOBOT PoC — UI</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-  <header class="wrap">
-    <h1>RAPSOBOT – PoC</h1>
-    <p class="muted">Phase 1 : UI statique (GitHub Pages) → upload PDF + paramètres → JSON (mock ou webhook).</p>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">R</div>
+      <div>
+        <div class="title">RAPSOBOT — PoC</div>
+        <div class="subtitle">Drill-down : Situations → Problèmes → Avis (cap 200)</div>
+      </div>
+    </div>
+
+    <div class="pill" id="statusPill">—</div>
   </header>
 
-  <main class="wrap grid">
+  <main class="container">
     <section class="card">
       <h2>Entrées</h2>
 
-      <form id="pocForm" class="form">
-        <div class="row">
-          <label>
-            Commune + code postal
-            <input id="communeCp" name="communeCp" placeholder="Annecy 74000" required />
-          </label>
+      <div class="grid">
+        <label class="field">
+          <span>Commune + CP</span>
+          <input id="communeCp" type="text" placeholder="ex: 74950 Scionzier" />
+        </label>
+
+        <label class="field">
+          <span>Catégorie d’importance</span>
+          <select id="importance">
+            <option value="je ne sais pas">je ne sais pas</option>
+            <option value="I">I</option>
+            <option value="II">II</option>
+            <option value="III">III</option>
+            <option value="IV">IV</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Classe de sol</span>
+          <select id="soilClass">
+            <option value="je ne sais pas">je ne sais pas</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+            <option value="E">E</option>
+            <option value="S1">S1</option>
+            <option value="S2">S2</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Liquéfaction</span>
+          <select id="liquefaction">
+            <option value="je ne sais pas">je ne sais pas</option>
+            <option value="non">non</option>
+            <option value="oui">oui</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Référentiel</span>
+          <select id="referential">
+            <option value="Eurocode 8">Eurocode 8</option>
+            <option value="PS-MI 89 révisées 92">PS-MI 89 révisées 92</option>
+            <option value="CP-MI Antilles">CP-MI Antilles</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Webhook URL (n8n)</span>
+          <input id="webhookUrl" type="url" placeholder="https://.../webhook/rapsobot-poc" />
+          <small class="hint">Peut aussi venir du query param <code>webhookUrl</code>.</small>
+        </label>
+
+        <label class="field">
+          <span>PDF URL (optionnel)</span>
+          <input id="pdfUrl" type="url" placeholder="https://.../document.pdf" />
+          <small class="hint">Si ton workflow n8n ne télécharge pas le PDF par URL, laisse vide.</small>
+        </label>
+      </div>
+
+      <div class="actions">
+        <button id="runBtn" class="btn primary">Lancer l’analyse</button>
+        <button id="resetBtn" class="btn">Réinitialiser</button>
+      </div>
+
+      <div id="runMeta" class="meta"></div>
+      <div id="errorBox" class="error hidden"></div>
+    </section>
+
+    <section class="split">
+      <section class="card">
+        <div class="cardHeader">
+          <h2>Situations</h2>
+          <div class="small" id="sitCount">—</div>
         </div>
+        <div id="situations" class="list emptyState">Lance une analyse pour afficher les situations.</div>
+      </section>
 
-        <div class="row two">
-          <label>
-            Catégorie d’importance
-            <select id="importance" name="importance" required>
-              <option value="">—</option>
-              <option>I</option><option>II</option><option>III</option><option>IV</option>
-              <option>je ne sais pas</option>
-            </select>
-          </label>
-
-          <label>
-            Classe de sol
-            <select id="soilClass" name="soilClass" required>
-              <option value="">—</option>
-              <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option>
-              <option>S1</option><option>S2</option>
-              <option>je ne sais pas</option>
-            </select>
-          </label>
+      <section class="card">
+        <div class="cardHeader">
+          <h2>Problèmes</h2>
+          <div class="small" id="pbCount">—</div>
         </div>
-
-        <div class="row two">
-          <label>
-            Liquéfaction
-            <select id="liquefaction" name="liquefaction" required>
-              <option value="">—</option>
-              <option>oui</option><option>non</option><option>je ne sais pas</option>
-            </select>
-          </label>
-
-          <label>
-            Référentiel
-            <select id="referential" name="referential" required>
-              <option value="">—</option>
-              <option>Eurocode 8</option>
-              <option>PS-MI 89 révisées 92</option>
-              <option>CP-MI Antilles</option>
-            </select>
-          </label>
-        </div>
-
-        <div class="row">
-          <label>
-            PDF (note / pièces)
-            <input id="pdf" name="pdf" type="file" accept="application/pdf" required />
-          </label>
-          <p class="hint">Astuce : commence avec un petit PDF (&lt; 5 Mo) pour éviter les soucis.</p>
-        </div>
-
-        <div class="row actions">
-          <button type="submit" id="runBtn">Lancer</button>
-
-          <label class="switch">
-            <input type="checkbox" id="mockMode" checked />
-            <span>Mode mock</span>
-          </label>
-
-          <label class="switch">
-            <input type="checkbox" id="showRaw" checked />
-            <span>Afficher JSON brut</span>
-          </label>
-        </div>
-
-        <div class="row">
-          <label>
-            Webhook n8n (si mode mock désactivé)
-            <input id="webhookUrl" name="webhookUrl"
-                   placeholder="https://.../webhook/rapsobot-poc"
-                   autocomplete="off" />
-          </label>
-          <p class="hint muted">En Phase 1 tu peux rester en mock. Quand tu activeras n8n, on gérera CORS.</p>
-        </div>
-      </form>
+        <div id="problems" class="list emptyState">Sélectionne une situation.</div>
+      </section>
     </section>
 
     <section class="card">
-      <h2>Sorties</h2>
-
-      <div id="status" class="status muted">Prêt.</div>
-
-      <div id="rendered">
-        <div id="situations"></div>
-        <div id="problems"></div>
-        <div id="avis"></div>
+      <div class="cardHeader">
+        <h2>Avis</h2>
+        <div class="small" id="avCount">—</div>
       </div>
-      
 
-      <details id="rawBox" open>
-        <summary>JSON brut</summary>
-        <pre id="raw"></pre>
-      </details>
+      <div class="toolbar">
+        <label class="chip">
+          Verdict
+          <select id="verdictFilter">
+            <option value="ALL">Tous</option>
+            <option value="KO">KO</option>
+            <option value="A_VERIFIER">A_VERIFIER</option>
+            <option value="OK">OK</option>
+          </select>
+        </label>
 
-      <details>
-        <summary>Log</summary>
-        <pre id="log"></pre>
-      </details>
+        <label class="chip">
+          Recherche
+          <input id="searchBox" type="text" placeholder="topic / EC8 / mot-clé..." />
+        </label>
+
+        <div class="spacer"></div>
+
+        <div class="chip">
+          Page
+          <button id="prevPage" class="btn small">◀</button>
+          <span id="pageInfo" class="mono">1 / 1</span>
+          <button id="nextPage" class="btn small">▶</button>
+        </div>
+      </div>
+
+      <div id="avis" class="tableWrap emptyState">Sélectionne un problème.</div>
     </section>
   </main>
-
-  <footer class="wrap muted foot">
-    <small>RAPSOBOT PoC – UI GitHub Pages</small>
-  </footer>
 
   <script src="app.js"></script>
 </body>
 </html>
-

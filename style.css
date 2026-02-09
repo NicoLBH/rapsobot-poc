@@ -2,7 +2,7 @@
   /* GitHub dark (approx) */
   --bg: #0d1117;
   --panel: #0d1117;
-  --panel2: #161b22;
+  --panel2: rgb(21, 27, 35);
   --text: #c9d1d9;
   --muted: #8b949e;
   --border: #30363d;
@@ -174,13 +174,14 @@ body {
 }
 
 .gh-panel {
-  background: var(--panel2);
+  background: none;
   border: 1px solid var(--border);
   border-radius: var(--radius2);
   box-shadow: var(--shadow);
 }
 
 .gh-panel__head {
+  background: var(--panel2);
   padding: 12px 12px 8px;
   border-bottom: 1px solid var(--border);
 }

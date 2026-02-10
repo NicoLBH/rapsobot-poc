@@ -41,7 +41,16 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);}
   display:inline-flex;align-items:center;gap:10px;
   color:var(--text);text-decoration:none;min-width:0;
 }
-.gh-brand__logo{width:24px;height:24px;border-radius:6px;background:#fff;padding:2px;object-fit:contain;}
+.gh-brand__logo{
+  width:34px;
+  height:34px;
+  border-radius:8px;
+  background:transparent;
+  padding:0;
+  object-fit:contain;
+  /* améliore la lisibilité du blanc sur fond noir */
+  filter: drop-shadow(0 0 6px rgba(0,0,0,.6));
+}
 .gh-brand__name{font-weight:700;}
 .gh-brand__sep{color:var(--muted);}
 .gh-brand__repo{color:var(--muted);}
@@ -114,13 +123,14 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);}
 
 /* Sidebar collapsed */
 body.sidebar-collapsed .gh-page--3col{grid-template-columns:0px 1fr 420px;}
+body.sidebar-collapsed .gh-page{padding-left: 64px;}
 body.sidebar-collapsed #sidebar{overflow:hidden;width:0;min-width:0;padding:0;margin:0;}
 
 /* Floating sidebar toggle */
 .sidebar-fab{
   position:fixed;
   top:72px; /* under header */
-  left:12px;
+  left:16px;
   z-index:30;
   padding:8px 12px;
 }

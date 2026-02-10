@@ -915,17 +915,40 @@ function toggleSidebar() {
 function openDetailsModal() {
   const modal = el("detailsModal");
   if (!modal) return;
+
+  // Affiche la modale
   modal.classList.remove("hidden");
+
+  // Bloque le scroll du background
   document.body.classList.add("modal-open");
-  // ensure modal content is in sync
+
+  // Sécurité : s'assurer que seul le body de la modale scrolle
+  const modalBody = modal.querySelector(".modal__body");
+  if (modalBody) {
+    modalBody.scrollTop = 0;
+  }
+
+  // Sync contenu (titre, meta, discussion, réponse humaine)
   renderDetails();
 }
+
 function closeDetailsModal() {
   const modal = el("detailsModal");
   if (!modal) return;
+
+  // Ferme la modale
   modal.classList.add("hidden");
+
+  // Restaure le scroll global
   document.body.classList.remove("modal-open");
+
+  // Sécurité : reset du scroll interne (évite état sale à la prochaine ouverture)
+  const modalBody = modal.querySelector(".modal__body");
+  if (modalBody) {
+    modalBody.scrollTop = 0;
+  }
 }
+
 
 function wireEvents() {
   el("runBtnTop").onclick = run;

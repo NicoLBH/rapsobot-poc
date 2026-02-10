@@ -207,6 +207,8 @@ body:not(.sidebar-collapsed) .sidebar-fab{display:none;}
   padding:16px;
   overflow:auto;
   height:calc(100vh - 56px - 48px); /* approx header + topbar */
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* Middle list lines */
@@ -294,3 +296,9 @@ body:not(.sidebar-collapsed) .sidebar-fab{display:none;}
 .gh-footer{padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
 .gh-counts{font-size:12px;color:var(--muted);}
 .gh-pagination{display:inline-flex;align-items:center;gap:10px;}
+
+/* === Disable background scroll when modal is open === */
+body.modal-open {
+  overflow: hidden;
+}
+

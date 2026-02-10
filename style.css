@@ -143,12 +143,11 @@ body:not(.sidebar-collapsed) .sidebar-fab{display:none;}
 
 .gh-panel__head{
   padding:12px;
-  background:var(--headbg);
   border-bottom:1px solid var(--border);
   border-top-left-radius:inherit;
   border-top-right-radius:inherit;
 }
-.gh-panel__head--tight{padding-bottom:10px;}
+.gh-panel__head--tight{padding-bottom:10px;background:var(--headbg);}
 .gh-panel__title{margin:0;font-size:14px;font-weight:700;}
 
 /* Sidebar */

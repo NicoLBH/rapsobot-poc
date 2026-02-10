@@ -84,6 +84,33 @@ function setIssuesTotals(d) {
 
 function setDetailsMeta(text) {
   el("detailsMeta").textContent = text || "—";
+  if (el("detailsMetaModal")) el("detailsMetaModal").textContent = text || "—";
+}
+
+function setDetailsTitle(text) {
+  const t = text || "Sélectionner un élément";
+  const m = el("detailsTitle");
+  if (m) m.textContent = t;
+  const mm = el("detailsTitleModal");
+  if (mm) mm.textContent = t;
+}
+
+/* ===== Minimal markdown preview (GitHub-like enough for PoC) ===== */
+function mdToHtml(md) {
+  const raw = String(md || "");
+  // escape first
+  let s = escapeHtml(raw);
+  // code
+  s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+  // bold
+  s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  // italic (simple)
+  s = s.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+  // links
+  s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+  // line breaks
+  s = s.replace(/\n/g, "<br>");
+  return s;
 }
 
 function applyQueryParamsToForm() {
@@ -348,11 +375,14 @@ function getThreadForSelection() {
 /* ===== Right panel render ===== */
 function renderDetails() {
   const host = el("detailsBody");
+  const hostModal = el("detailsBodyModal");
   const d = state.data;
 
   if (!d) {
     setDetailsMeta("—");
+    setDetailsTitle("Sélectionner un élément");
     host.innerHTML = `<div class="emptyState">Sélectionne une situation / un problème / un avis pour afficher les détails.</div>`;
+    if (hostModal) hostModal.innerHTML = host.innerHTML;
     return;
   }
 
@@ -365,6 +395,12 @@ function renderDetails() {
   else if (p) setDetailsMeta(`problem_id=${p.problem_id}`);
   else if (s) setDetailsMeta(`situation_id=${s.situation_id}`);
   else setDetailsMeta("—");
+
+  // Title in head: show the *name* (most important)
+  if (a) setDetailsTitle(a.topic ? `Avis — ${a.topic}` : `Avis — ${a.avis_id}`);
+  else if (p) setDetailsTitle(p.topic ? `Problème — ${p.topic}` : `Problème — ${p.problem_id}`);
+  else if (s) setDetailsTitle(s.title ? `Situation — ${s.title}` : `Situation — ${s.situation_id}`);
+  else setDetailsTitle("Sélectionner un élément");
 
   // decision target = most specific selection
   let decisionTarget = null;
@@ -474,19 +510,12 @@ function renderDetails() {
     return;
   }
 
-  const actionsHtml = decisionTarget ? `
+  const decisionRowHtml = decisionTarget ? `
     <div class="actions-row" style="margin-top:8px;">
       ${decisionBadge}
       <button class="gh-btn gh-btn--success" data-action="decide" data-decision="ACCEPT">Accepter</button>
       <button class="gh-btn gh-btn--danger" data-action="decide" data-decision="REFUSE">Refuser</button>
       <button class="gh-btn gh-btn--neutral" data-action="decide" data-decision="NEEDS_REVIEW">À vérifier</button>
-    </div>
-
-    <div style="margin-top:10px;">
-      <textarea id="humanComment" class="textarea" placeholder="Commentaire humain (raison, hypothèses, points à corriger…)"></textarea>
-      <div class="actions-row" style="margin-top:8px;">
-        <button class="gh-btn" data-action="add-comment">Ajouter un commentaire</button>
-      </div>
     </div>
   ` : "";
 
@@ -515,19 +544,50 @@ function renderDetails() {
     </div>
   ` : "";
 
-  host.innerHTML = `
+  // Human response below discussion (GitHub issue ergonomics)
+  const commentBoxHtml = decisionTarget ? `
+    <div class="hr"></div>
+    <div class="mono" style="color: var(--muted); font-size:12px; margin-bottom:8px;">Add a comment</div>
+    <div class="comment-box">
+      <div class="comment-tabs" role="tablist" aria-label="Comment tabs">
+        <button class="comment-tab" id="tabWrite" role="tab" aria-selected="true" data-tab="write">Write</button>
+        <button class="comment-tab" id="tabPreview" role="tab" aria-selected="false" data-tab="preview">Preview</button>
+      </div>
+      <div class="comment-editor" id="commentEditor">
+        <textarea id="humanComment" class="textarea" placeholder="Réponse humaine (Markdown) — hypothèses, points à corriger, décision, etc."></textarea>
+        <div class="actions-row" style="margin-top:10px; justify-content:space-between;">
+          <div>${decisionRowHtml}</div>
+          <button class="gh-btn" data-action="add-comment">Comment</button>
+        </div>
+      </div>
+      <div class="comment-editor hidden" id="commentPreviewWrap">
+        <div class="comment-preview" id="commentPreview"></div>
+        <div class="actions-row" style="margin-top:10px; justify-content:space-between;">
+          <div>${decisionRowHtml}</div>
+          <button class="gh-btn" data-action="add-comment">Comment</button>
+        </div>
+      </div>
+    </div>
+  ` : "";
+
+  const contentHtml = `
     <div style="display:flex; align-items: baseline; justify-content: space-between; gap: 12px;">
       <div style="font-weight:700;">${escapeHtml(title)}</div>
       <div class="mono" style="color: var(--muted); font-size:12px;">run_id=${escapeHtml(d.run_id || "")}</div>
     </div>
     ${body}
-    ${actionsHtml}
     ${threadHtml}
+    ${commentBoxHtml}
   `;
 
+  host.innerHTML = contentHtml;
+  if (hostModal) hostModal.innerHTML = contentHtml;
+
   // wire decision buttons
-  if (decisionTarget) {
-    host.querySelectorAll("[data-action='decide']").forEach((btn) => {
+  // wire decision buttons + comment box (main + modal)
+  const wireHost = (root) => {
+    if (!root || !decisionTarget) return;
+    root.querySelectorAll("[data-action='decide']").forEach((btn) => {
       btn.onclick = () => {
         const decision = btn.getAttribute("data-decision");
         const note = (el("humanComment")?.value || "").trim();
@@ -536,8 +596,7 @@ function renderDetails() {
       };
     });
 
-    const addBtn = host.querySelector("[data-action='add-comment']");
-    if (addBtn) {
+    root.querySelectorAll("[data-action='add-comment']").forEach((addBtn) => {
       addBtn.onclick = () => {
         const msg = (el("humanComment")?.value || "").trim();
         if (!msg) return;
@@ -545,8 +604,31 @@ function renderDetails() {
         el("humanComment").value = "";
         renderDetails();
       };
+    });
+
+    // tabs + preview
+    const tabWrite = root.querySelector("#tabWrite");
+    const tabPreview = root.querySelector("#tabPreview");
+    const editor = root.querySelector("#commentEditor");
+    const previewWrap = root.querySelector("#commentPreviewWrap");
+    const preview = root.querySelector("#commentPreview");
+    const ta = root.querySelector("#humanComment");
+
+    function setTab(which) {
+      const isWrite = which === "write";
+      if (tabWrite) tabWrite.setAttribute("aria-selected", String(isWrite));
+      if (tabPreview) tabPreview.setAttribute("aria-selected", String(!isWrite));
+      if (editor) editor.classList.toggle("hidden", !isWrite);
+      if (previewWrap) previewWrap.classList.toggle("hidden", isWrite);
+      if (!isWrite && preview && ta) preview.innerHTML = mdToHtml(ta.value);
     }
-  }
+
+    if (tabWrite) tabWrite.onclick = () => setTab("write");
+    if (tabPreview) tabPreview.onclick = () => setTab("preview");
+  };
+
+  wireHost(host);
+  wireHost(hostModal);
 
   // wire avis selection inside right panel (problem view)
   host.querySelectorAll("[data-detail-action='select-avis']").forEach((row) => {
@@ -825,12 +907,45 @@ function resetUI() {
 function toggleSidebar() {
   state.sidebarCollapsed = !state.sidebarCollapsed;
   document.body.classList.toggle("sidebar-collapsed", state.sidebarCollapsed);
+  const btn = el("sidebarToggleFloating");
+  if (btn) btn.setAttribute("aria-label", state.sidebarCollapsed ? "Afficher le menu" : "Rétracter le menu");
+}
+
+/* ===== Details fullscreen modal ===== */
+function openDetailsModal() {
+  const modal = el("detailsModal");
+  if (!modal) return;
+  modal.classList.remove("hidden");
+  document.body.classList.add("modal-open");
+  // ensure modal content is in sync
+  renderDetails();
+}
+function closeDetailsModal() {
+  const modal = el("detailsModal");
+  if (!modal) return;
+  modal.classList.add("hidden");
+  document.body.classList.remove("modal-open");
 }
 
 function wireEvents() {
   el("runBtnTop").onclick = run;
   el("resetBtn").onclick = resetUI;
-  el("sidebarToggle").onclick = toggleSidebar;
+  if (el("sidebarToggle")) el("sidebarToggle").onclick = toggleSidebar;
+  if (el("sidebarToggleFloating")) el("sidebarToggleFloating").onclick = toggleSidebar;
+
+  if (el("detailsExpand")) el("detailsExpand").onclick = openDetailsModal;
+  if (el("detailsClose")) el("detailsClose").onclick = closeDetailsModal;
+
+  // close modal on overlay click or ESC
+  const modal = el("detailsModal");
+  if (modal) {
+    modal.onclick = (ev) => {
+      if (ev.target === modal) closeDetailsModal();
+    };
+  }
+  window.addEventListener("keydown", (ev) => {
+    if (ev.key === "Escape") closeDetailsModal();
+  });
 
   el("verdictFilter").onchange = (ev) => {
     state.verdictFilter = ev.target.value;

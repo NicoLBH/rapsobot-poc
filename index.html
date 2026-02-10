@@ -31,6 +31,9 @@
     </div>
   </header>
 
+  <!-- Floating toggle (visible when sidebar is collapsed) -->
+  <button id="sidebarToggleFloating" class="icon-btn sidebar-fab" aria-label="Afficher le menu" title="Afficher le menu">☰</button>
+
   <main class="gh-page gh-page--3col">
     <!-- LEFT: Inputs (retractable) -->
     <section class="gh-sidebar" aria-label="Inputs" id="sidebar">
@@ -122,7 +125,7 @@
       </div>
     </section>
 
-    <!-- MIDDLE: Results (structure kept, but rendering lighter; avis header appears once) -->
+    <!-- MIDDLE: Results -->
     <section class="gh-panel gh-panel--results" aria-label="Results">
       <div class="gh-panel__head gh-panel__head--tight">
         <div class="issues-head">
@@ -164,8 +167,15 @@
     <section class="gh-panel gh-panel--details" aria-label="Details">
       <div class="gh-panel__head gh-panel__head--tight">
         <div class="details-head">
-          <h2 class="gh-panel__title">Details</h2>
-          <div class="details-meta mono" id="detailsMeta">—</div>
+          <div class="details-head-left">
+            <div class="details-kicker mono">DÉTAILS</div>
+            <h2 class="gh-panel__title" id="detailsTitle">Sélectionner un élément</h2>
+          </div>
+
+          <div class="details-head-right">
+            <div class="details-meta mono" id="detailsMeta">—</div>
+            <button id="detailsExpand" class="icon-btn icon-btn--sm" aria-label="Agrandir" title="Agrandir">⤢</button>
+          </div>
         </div>
       </div>
 
@@ -174,6 +184,23 @@
       </div>
     </section>
   </main>
+
+  <!-- Details fullscreen modal -->
+  <div id="detailsModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Détails">
+    <div class="modal__inner">
+      <div class="modal__head">
+        <div class="modal__head-left">
+          <div class="details-kicker mono">DÉTAILS</div>
+          <div class="modal__title" id="detailsTitleModal">Sélectionner un élément</div>
+        </div>
+        <div class="modal__head-right">
+          <div class="details-meta mono" id="detailsMetaModal">—</div>
+          <button id="detailsClose" class="icon-btn icon-btn--sm" aria-label="Fermer" title="Fermer">✕</button>
+        </div>
+      </div>
+      <div class="modal__body" id="detailsBodyModal"></div>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>

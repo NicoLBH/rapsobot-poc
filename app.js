@@ -798,8 +798,27 @@ function renderMiddle() {
   renderDetails();
 }
 
+/* ===== Network helpers (timeout + delayed status message) ===== */
+const FETCH_TIMEOUT_MS = 180_000;      // 3 minutes
+const SLOW_NOTICE_MS   = 25_000;       // show "still running" message after 25s
+
+function isAbortError(e) {
+  return e && (e.name === "AbortError" || String(e).includes("AbortError"));
+}
+
+async function fetchWithTimeout(url, options = {}, timeoutMs = FETCH_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(id);
+  }
+}
+
 /* ===== Run / Reset / Sidebar ===== */
 async function run() {
+  // Clear prior UI states, but do NOT fail fast visually: long runs are expected.
   showError("");
   setRunMeta("");
   setSystemStatus("running", "En cours d’analyse", "POST /webhook");
@@ -824,12 +843,21 @@ async function run() {
     referential: inp.referential,
   };
 
+  // Show a gentle notice if the request is still running after a while.
+  let slowTimer = null;
+  slowTimer = setTimeout(() => {
+    // Not an error: just set expectations and avoid a scary red banner too early.
+    showError("Analyse en cours… (cela peut prendre 1–3 minutes selon le PDF).");
+    setSystemStatus("running", "En cours d’analyse", "toujours en cours…");
+  }, SLOW_NOTICE_MS);
+
   try {
     const form = new FormData();
     form.append("user_reference", JSON.stringify(user_reference));
     form.append("pdf", inp.pdfFile, inp.pdfFile.name);
 
-    const res = await fetch(inp.webhookUrl, { method: "POST", body: form });
+    // IMPORTANT: enforce a client-side timeout longer than default.
+    const res = await fetchWithTimeout(inp.webhookUrl, { method: "POST", body: form }, FETCH_TIMEOUT_MS);
     const text = await res.text();
 
     let data;
@@ -856,6 +884,7 @@ async function run() {
     state.selectedAvisId = null;
 
     setRunMeta(final.run_id || "");
+    showError(""); // clear any slow notice
     setSystemStatus("done", "Terminé", final.status || "OK");
     renderMiddle();
   } catch (e) {
@@ -868,8 +897,26 @@ async function run() {
     state.page = 1;
 
     renderMiddle();
-    showError(e?.message || String(e));
+
+    // If we aborted due to timeout, make it explicit (and less confusing).
+    if (isAbortError(e)) {
+      showError("Analyse trop longue côté navigateur (timeout). Le workflow côté n8n peut continuer. Relance ou passe au mode 'polling' (à ajouter).");
+      setSystemStatus("error", "Timeout", "voir message");
+      return;
+    }
+
+    // If it is a generic 'Failed to fetch', keep the message less alarming.
+    const msg = e?.message || String(e);
+    if (String(msg).toLowerCase().includes("failed to fetch")) {
+      showError("Connexion instable : la requête a échoué côté navigateur, mais n8n peut avoir continué. (Solution robuste : accusé de réception + polling).");
+      setSystemStatus("error", "Erreur réseau", "voir message");
+      return;
+    }
+
+    showError(msg);
     setSystemStatus("error", "Erreur", "voir message");
+  } finally {
+    if (slowTimer) clearTimeout(slowTimer);
   }
 }
 

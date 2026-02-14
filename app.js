@@ -664,9 +664,8 @@ function renderMiddle() {
       <table>
         <thead>
           <tr>
-            <th style="width:90px">Sev</th>
-            <th style="width:110px">Verdict</th>
             <th>Thème</th>
+            <th style="width:110px">Verdict</th>
             <th style="width:140px">Agent</th>
             <th style="width:140px">avis_id</th>
           </tr>
@@ -690,8 +689,7 @@ function renderMiddle() {
       <div class="line click" data-action="toggle-sit" data-sit="${escapeHtml(s.situation_id)}">
         <div class="line-left">
           <div class="chev">${sitChev}</div>
-          <span class="${badgePriority(s.priority)}">${escapeHtml(s.priority)}</span>
-          <div class="line-title"><b>${escapeHtml(s.title || "(sans titre)")}</b></div>
+          <div class="line-title"><b>${escapeHtml(s.title || "(sans titre)")} <span class="${badgePriority(s.priority)}">${escapeHtml(s.priority)}</span></b></div>
         </div>
         <div class="line-meta">
           <span class="mono">pb=${escapeHtml((s.problem_ids || []).length)}</span>
@@ -712,8 +710,7 @@ function renderMiddle() {
           <div class="line click" style="padding-left:22px;" data-action="toggle-pb" data-pb="${escapeHtml(pb.problem_id)}">
             <div class="line-left">
               <div class="chev">${pbChev}</div>
-              <span class="${badgePriority(pb.priority)}">${escapeHtml(pb.priority)}</span>
-              <div class="line-title">${escapeHtml(pb.topic || "Non classé")}</div>
+              <div class="line-title">${escapeHtml(pb.topic || "Non classé")} <span class="${badgePriority(pb.priority)}">${escapeHtml(pb.priority)}</span></div>
             </div>
             <div class="line-meta">
               <span class="mono">avis=${escapeHtml((pb.avis_ids || []).length)}</span>
@@ -731,16 +728,14 @@ function renderMiddle() {
 
           html.push(`
             <div style="padding-left:44px; padding-top:6px; padding-bottom:8px;">
-              <div class="mono-small" style="margin-bottom:6px;">avis affichés: ${escapeHtml(total)} (après filtres)</div>
               <table class="avis-table">
                 <tbody>
                   ${slice.map((a) => `
                     <tr class="click" data-action="select-avis" data-avis="${escapeHtml(a.avis_id)}">
-                      <td style="width:90px;"><span class="${badgePriority(a.severity)}">${escapeHtml(a.severity)}</span></td>
+                      <td>${escapeHtml(a.topic || "")} <span class="${badgePriority(a.severity)}" style="margin-left:8px;">${escapeHtml(a.severity)}</span></td>
                       <td style="width:110px;"><span class="${badgeVerdict(a.verdict)}">${escapeHtml(a.verdict)}</span></td>
-                      <td>${escapeHtml(a.topic || "")}</td>
                       <td style="width:140px;" class="mono-small">${escapeHtml(inferAgent(a))}</td>
-                      <td style="width:140px;" class="mono">${escapeHtml(a.avis_id)}</td>
+                      <td style="width:140px;">${escapeHtml(a.avis_id)}</td>
                     </tr>
                   `).join("")}
                 </tbody>

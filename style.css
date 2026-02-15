@@ -340,7 +340,7 @@ body.modal-open {
 
 
 
-body.banner-visible .gh-page{top:calc(var(--header-h) + 44px);}
+body.banner-visible .gh-page{top:calc(var(--header-h) + 64px);}
 
 
 

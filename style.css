@@ -521,6 +521,7 @@ body.banner-visible .gh-page{top:calc(var(--header-h) + 44px);}
   align-items:center;
   justify-content:space-between;
   gap: 12px;
+  padding:6px 10px,
   width:100%;
 }
 .results-bar__left{

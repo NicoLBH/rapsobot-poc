@@ -818,7 +818,7 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = FETCH_TIMEOUT_MS)
 
 /* ===== Async pattern: ACK + Polling (status endpoint) ===== */
 const POLL_EVERY_MS = 2000;
-const POLL_MAX_MS   = 5 * 60_000;
+const POLL_MAX_MS   = 12 * 60_000;  // 12 minutes
 
 function deriveStatusUrl(webhookUrl) {
   // Default convention: same base path, replace trailing "/rapsobot-poc" by "/rapsobot-poc-status"
@@ -842,7 +842,7 @@ async function pollRunStatus({ statusUrl, runId }) {
 
     let res;
     try {
-      res = await fetchWithTimeout(`${statusUrl}?run_id=${encodeURIComponent(runId)}`, { method: "GET" }, 30_000);
+      res = await fetchWithTimeout(`${statusUrl}?run_id=${encodeURIComponent(runId)}`, { method: "GET" }, 60_000);
     } catch (e) {
       // Network hiccup during polling → keep waiting
       showError("Analyse en cours… (récupération du statut en cours)");

@@ -201,7 +201,7 @@ body:not(.sidebar-collapsed) .sidebar-fab{display:none;}
 .hidden{display:none;}
 
 /* Filters */
-.gh-filters{margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.gh-filters{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 .gh-filter{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);}
 
 /* Head lines */

@@ -855,7 +855,13 @@ async function pollRunStatus({ statusUrl, runId }) {
 
     let res;
     try {
-      res = await fetchWithTimeout(`${statusUrl}?run_id=${encodeURIComponent(runId)}`, { method: "GET" }, 60_000);
+      const bust = Date.now();
+      res = await fetchWithTimeout(
+        `${statusUrl}?run_id=${encodeURIComponent(runId)}&_t=${bust}`,
+        { method: "GET", cache: "no-store" },
+        60_000
+      );
+
     } catch (e) {
       // Network hiccup during polling → keep waiting
       showError("Analyse en cours… (récupération du statut en cours)");

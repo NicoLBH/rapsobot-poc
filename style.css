@@ -482,7 +482,7 @@ body.banner-visible .gh-page{top:calc(var(--header-h) + 64px);}
 .gh-panel--results .gh-panel__head--tight,
 .gh-panel--details .gh-panel__head{
   min-height:var(--panel-head-h);
-  display:flex;
+  /*display:flex;*/
   align-items:center;
 }
 .gh-panel--results .gh-panel__head--tight{padding:10px 12px;}

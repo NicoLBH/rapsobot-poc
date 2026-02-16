@@ -503,9 +503,9 @@ body.banner-visible .gh-page{top:calc(var(--header-h) + 64px);}
   font-size: 13px;
 }
 .gh-banner.hidden{display:none;}
-.gh-banner--error{
+#topBanner.gh-banner--error{
   background: rgb(163, 16, 14);
-  border-color: var(--danger);
+  border: 1px solid var(--danger);
 }
 
 /* Sidebar head padding */

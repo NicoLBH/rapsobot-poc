@@ -88,7 +88,7 @@ function setIssuesTotals(d) {
   const s = Array.isArray(d.situations) ? d.situations.length : 0;
   const p = Array.isArray(d.ems) ? d.ems.length : 0;
   const a = Array.isArray(d.avis) ? d.avis.length : 0;
-  node.textContent = `${s} situations · ${p} èmes · ${a} avis`;
+  node.textContent = `${s} situations · ${p} sujets · ${a} avis`;
 }
 
 
@@ -336,7 +336,7 @@ function getThreadForSelection() {
       type: "SITUATION",
       entity_type: "situation",
       entity_id: s.situation_id,
-      message: `${s.title || "(sans titre)"}\npriority=${s.priority || ""}\nproblems=${(s.problem_ids || []).length}`,
+      message: `${s.title || "(sans titre)"}\npriority=${s.priority || ""}\nsujets=${(s.problem_ids || []).length}`,
     });
   }
   if (p) {
@@ -344,8 +344,8 @@ function getThreadForSelection() {
       ts: d.run_id || "",
       actor: "System",
       agent: inferAgent(p),
-      type: "PROBLEM",
-      entity_type: "problem",
+      type: "SUJET",
+      entity_type: "sujet",
       entity_id: p.problem_id,
       message: `${p.topic || "Non classé"}\npriority=${p.priority || ""}\navis=${(p.avis_ids || []).length}`,
     });

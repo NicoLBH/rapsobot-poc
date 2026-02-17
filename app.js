@@ -860,7 +860,7 @@ const STATUS_URL_PROD = "https://nicolbh.app.n8n.cloud/webhook/rapsobot-poc-stat
 */
 const SUPABASE_URL = "https://smsizuijtrqogupgjnyj.supabase.co";
 // ⚠️ Replace with your *publishable/anon* key (often starts with "sb_publishable_...").
-const SUPABASE_ANON_KEY = "REPLACE_WITH_SB_PUBLISHABLE_KEY";
+const SUPABASE_ANON_KEY = "sb_publishable_0JlI9Nc1tyGmjuBZX9Oznw_Zlnfq6gC";
 
 async function fetchRunRowFromSupabase(runId) {
   const url =

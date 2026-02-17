@@ -865,7 +865,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_0JlI9Nc1tyGmjuBZX9Oznw_Zlnfq6gC";
 async function fetchRunRowFromSupabase(runId) {
   // Build URL via URLSearchParams to avoid encoding / quoting pitfalls.
   const u = new URL(`${SUPABASE_URL}/rest/v1/rapsobot_runs`);
-  u.searchParams.set("select", "run_id,status,payload,updated_at");
+  u.searchParams.set("select", "run_id,status,phase,phase_progress,phase_msg,payload,updated_at");
   u.searchParams.set("run_id", `eq.${runId}`);
   u.searchParams.set("limit", "1");
 
@@ -900,14 +900,23 @@ const POLL_MAX_INTERVAL_MS = 20_000;
 const POLL_MAX_MS          = 12 * 60_000;  // 12 minutes
 const POLL_FAST_TRIES      = 5;            // keep first few polls snappy
 
-function computePollDelayMs(tries) {
-  // 1) Background tab → don't burn quota for invisible UI
-  if (document.hidden) return Math.max(POLL_MAX_INTERVAL_MS, 30_000);
+function computePollDelayMs(tries, progress) {
+  // Background tab → très lent
+  if (document.hidden) return 30_000;
 
-  // 2) First polls fast
+  const p = Number.isFinite(Number(progress)) ? Number(progress) : null;
+
+  // Si on a un % : lent au début, rapide à la fin
+  if (p !== null) {
+    if (p < 20) return 20_000;
+    if (p < 40) return 15_000;
+    if (p < 60) return 10_000;
+    if (p < 80) return 6_000;
+    return 2_000; // 80–100 : rapide
+  }
+
+  // Fallback sans % (comportement actuel, mais moins agressif)
   if (tries <= POLL_FAST_TRIES) return POLL_BASE_MS;
-
-  // 3) Exponential backoff with cap
   const pow = Math.min(tries - POLL_FAST_TRIES, 10);
   const delay = POLL_BASE_MS * Math.pow(1.6, pow);
   return Math.min(POLL_MAX_INTERVAL_MS, Math.round(delay));
@@ -967,6 +976,24 @@ try {
     }
     const payload = data?.payload || null;
 
+    const phase = String(data?.phase || "").trim();
+    const progress = data?.phase_progress;
+    const phaseMsg = String(data?.phase_msg || "").trim();
+    
+    const meta = [
+      status || "IN_PROGRESS",
+      phase ? `· ${phase}` : "",
+      (progress !== undefined && progress !== null) ? `· ${progress}%` : ""
+    ].join(" ").replace(/\s+/g, " ").trim();
+    
+    const bannerMsg = phaseMsg
+      ? `Analyse en cours… pol #${tries} · ${meta} — ${phaseMsg}`
+      : `Analyse en cours… pol #${tries} · ${meta}`;
+    
+    showBanner("info", bannerMsg);
+    setSystemStatus("running", "En cours d’analyse", meta);
+
+
     // READY + payload => render
     if ((status === "READY_FOR_REVIEW" || status === "DONE" || status === "READY") && payload) {
       const final = payload.final_result || payload;
@@ -995,7 +1022,7 @@ try {
     setRunMeta(runId);
     setSystemStatus("running", "En cours d’analyse", meta);
 
-    await new Promise(r => setTimeout(r, computePollDelayMs(tries)));
+    await new Promise(r => setTimeout(r, computePollDelayMs(tries, progress)));
   }
 
   // Timeout polling

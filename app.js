@@ -688,6 +688,12 @@ function renderDetails() {
 }
 
 /* ===== Middle render (lighter, persistent expand) ===== */
+function idFromAny(x) {
+  if (!x) return null;
+  if (typeof x === "string" || typeof x === "number") return String(x);
+  if (typeof x === "object") return x.avis_id || x.problem_id || x.situation_id || x.id || null;
+  return null;
+}
 function renderMiddle() {
   const host = el("issuesTable");
   const counts = el("counts");
@@ -738,7 +744,7 @@ function renderMiddle() {
     `);
 
     if (sitOpen) {
-      const problems = (s.problem_ids || []).map((pid) => pbById.get(pid)).filter(Boolean);
+      const problems = (s.problem_ids || []).map((pid) => pbById.get(idFromAny(pid))).filter(Boolean);
 
       for (const pb of problems) {
         const pbOpen = state.expandedProblems.has(pb.problem_id);
@@ -758,7 +764,7 @@ function renderMiddle() {
         `);
 
         if (pbOpen) {
-          const avisAll = (pb.avis_ids || []).map((aid) => avById.get(aid)).filter(Boolean);
+          const avisAll = (pb.avis_ids || []).map((aid) => avById.get(idFromAny(aid))).filter(Boolean);
           const avisFiltered = applyAvisFilters(avisAll);
           const { pages, slice } = paginate(avisFiltered);
           const pageInfoEl = el("pageInfo"); if (pageInfoEl) pageInfoEl.textContent = `${state.page} / ${pages}`;

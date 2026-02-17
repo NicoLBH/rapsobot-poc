@@ -86,9 +86,9 @@ function setIssuesTotals(d) {
   const node = el("issuesTotals");
   if (!d) return (node.textContent = "—");
   const s = Array.isArray(d.situations) ? d.situations.length : 0;
-  const p = Array.isArray(d.problems) ? d.problems.length : 0;
+  const p = Array.isArray(d.ems) ? d.ems.length : 0;
   const a = Array.isArray(d.avis) ? d.avis.length : 0;
-  node.textContent = `${s} situations · ${p} problèmes · ${a} avis`;
+  node.textContent = `${s} situations · ${p} èmes · ${a} avis`;
 }
 
 function setDetailsMeta(text) {
@@ -390,7 +390,7 @@ function renderDetails() {
   if (!d) {
     setDetailsMeta("—");
     setDetailsTitle("Sélectionner un élément");
-    host.innerHTML = `<div class="emptyState">Sélectionne une situation / un problème / un avis pour afficher les détails.</div>`;
+    host.innerHTML = `<div class="emptyState">Sélectionne une situation / un sujet / un avis pour afficher les détails.</div>`;
     if (hostModal) hostModal.innerHTML = host.innerHTML;
     return;
   }
@@ -407,7 +407,7 @@ function renderDetails() {
 
   // Title in head: show the *name* (most important)
   if (a) setDetailsTitle(a.topic ? `Avis — ${a.topic}` : `Avis — ${a.avis_id}`);
-  else if (p) setDetailsTitle(p.topic ? `Problème — ${p.topic}` : `Problème — ${p.problem_id}`);
+  else if (p) setDetailsTitle(p.topic ? `Sujet — ${p.topic}` : `Sujet — ${p.problem_id}`);
   else if (s) setDetailsTitle(s.title ? `Situation — ${s.title}` : `Situation — ${s.situation_id}`);
   else setDetailsTitle("Sélectionner un élément");
 
@@ -445,8 +445,8 @@ function renderDetails() {
 
       ${pp ? `
       <div class="kv">
-        <div class="k">Problème</div><div class="v">${escapeHtml(pp.topic || "Non classé")}</div>
-        <div class="k">problem_id</div><div class="v mono">${escapeHtml(pp.problem_id)}</div>
+        <div class="k">Sujet</div><div class="v">${escapeHtml(pp.topic || "Non classé")}</div>
+        <div class="k">sujet_id</div><div class="v mono">${escapeHtml(pp.problem_id)}</div>
       </div>` : ""}
 
       <div class="hr"></div>
@@ -482,7 +482,7 @@ function renderDetails() {
         <div class="k">Priority</div><div class="v"><span class="${badgePriority(p.priority)}">${escapeHtml(p.priority)}</span></div>
         <div class="k">Topic</div><div class="v">${escapeHtml(p.topic || "Non classé")}</div>
         <div class="k">Agent</div><div class="v mono">${escapeHtml(inferAgent(p))}</div>
-        <div class="k">problem_id</div><div class="v mono">${escapeHtml(p.problem_id)}</div>
+        <div class="k">sujet_id</div><div class="v mono">${escapeHtml(p.problem_id)}</div>
         <div class="k">Avis</div><div class="v mono">${escapeHtml(avis.length)}</div>
       </div>
 
@@ -511,7 +511,7 @@ function renderDetails() {
 
       ${avis.length ? `
       <div class="hr"></div>
-      <div class="mono" style="color: var(--muted); font-size:12px; margin-bottom:8px;">Avis (ce problème uniquement)</div>
+      <div class="mono" style="color: var(--muted); font-size:12px; margin-bottom:8px;">Avis (ce sujet uniquement)</div>
       <table class="avis-table">
         <tbody>
           ${avis.map((x) => `
@@ -534,7 +534,7 @@ function renderDetails() {
         <div class="k">Title</div><div class="v">${escapeHtml(s.title || "(sans titre)")}</div>
         <div class="k">Agent</div><div class="v mono">${escapeHtml(inferAgent(s))}</div>
         <div class="k">situation_id</div><div class="v mono">${escapeHtml(s.situation_id)}</div>
-        <div class="k">Problems</div><div class="v mono">${escapeHtml((s.problem_ids || []).length)}</div>
+        <div class="k">Sujets</div><div class="v mono">${escapeHtml((s.problem_ids || []).length)}</div>
       </div>
     
       ${(s.summary || (s.key_conflict_ids||[]).length) ? `

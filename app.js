@@ -1002,6 +1002,9 @@ try {
     // READY + payload => render
     if ((status === "READY_FOR_REVIEW" || status === "DONE" || status === "READY") && payload) {
       const final = payload.final_result || payload;
+      let final = payload.final_result || payload;
+      if (Array.isArray(final)) final = final[0] || {};
+      if (final && Array.isArray(final.final_result)) final = final.final_result[0] || {};
 
       state.data = final;
       state.expandedSituations = new Set();

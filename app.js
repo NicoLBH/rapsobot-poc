@@ -495,12 +495,12 @@ function renderDetails() {
       ${(p.stakes||[]).length ? `
         <div class=\"hr\"></div>
         <div class=\"mono\" style=\"color: var(--muted); font-size:12px; margin-bottom:6px;\">Enjeux</div>
-        <ul class=\"bullets\">${(p.stakes||[]).map(x => `<li>${escapeHtml(String(x))}</li>`).join(\"\")}</ul>
+        <ul class=\"bullets\">${(p.stakes||[]).map(x => `<li>${escapeHtml(String(x))}</li>`).join("")}</ul>
       ` : ``}
       ${(p.recommendations||[]).length ? `
         <div class=\"hr\"></div>
         <div class=\"mono\" style=\"color: var(--muted); font-size:12px; margin-bottom:6px;\">Recommandations</div>
-        <ul class=\"bullets\">${(p.recommendations||[]).map(x => `<li>${escapeHtml(String(x))}</li>`).join(\"\")}</ul>
+        <ul class=\"bullets\">${(p.recommendations||[]).map(x => `<li>${escapeHtml(String(x))}</li>`).join("")}</ul>
       ` : ``}
       ${p.why_grouped ? `
         <div class=\"hr\"></div>
@@ -546,7 +546,7 @@ function renderDetails() {
       ${(s.key_conflict_ids||[]).length ? `
         <div class=\"hr\"></div>
         <div class=\"mono\" style=\"color: var(--muted); font-size:12px; margin-bottom:6px;\">Conflits clés</div>
-        <div class=\"mono-small\">${escapeHtml((s.key_conflict_ids||[]).join(\", \"))}</div>
+        <div class=\"mono-small\">${escapeHtml((s.key_conflict_ids||[]).join(", "))}</div>
       ` : ``}
       ` : ``}
     `;

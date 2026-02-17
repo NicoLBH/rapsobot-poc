@@ -2,7 +2,8 @@
 :root{
   --bg:#0d1117;
   --panel2:#161b22;
-  --headbg:rgb(1, 4, 9); /*rgb(21,27,35);*/
+  --headbg:rgb(1, 4, 9);
+  --headbgtight:rgb(21,27,35);
   --text:#c9d1d9;
   --muted:#8b949e;
   --border:#30363d;
@@ -171,7 +172,7 @@ body:not(.sidebar-collapsed) .sidebar-fab{display:none;}
   border-top-left-radius:inherit;
   border-top-right-radius:inherit;
 }
-.gh-panel__head--tight{padding-bottom:10px;background:var(--headbg);}
+.gh-panel__head--tight{padding-bottom:10px;background:var(--headbgtight);}
 
 /* Middle only: head without background + bordered */
 .gh-panel--results .gh-panel__head--tight{background:transparent;border:1px solid var(--border);border-bottom:1px solid var(--border);border-radius:var(--radius);}

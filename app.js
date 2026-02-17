@@ -591,30 +591,35 @@ function renderDetails() {
   ` : "";
 
   // Human response below discussion (GitHub issue ergonomics)
-  const commentBoxHtml = decisionTarget ? `
-    <div class="hr"></div>
-    <div class="mono" style="color: var(--muted); font-size:12px; margin-bottom:8px;">Add a comment</div>
-    <div class="comment-box">
-      <div class="comment-tabs" role="tablist" aria-label="Comment tabs">
-        <button class="comment-tab" id="tabWrite" role="tab" aria-selected="true" data-tab="write">Write</button>
-        <button class="comment-tab" id="tabPreview" role="tab" aria-selected="false" data-tab="preview">Preview</button>
-      </div>
-      <div class="comment-editor" id="commentEditor">
-        <textarea id="humanComment" class="textarea" placeholder="Réponse humaine (Markdown) — hypothèses, points à corriger, décision, etc."></textarea>
-        <div class="actions-row" style="margin-top:10px; justify-content:space-between;">
-          <div>${decisionRowHtml}</div>
-          <button class="gh-btn" data-action="add-comment">Comment</button>
+  function commentBoxHtmlFor(suffix) {
+    const id = (base) => `${base}${suffix}`;
+  
+    return decisionTarget ? `
+      <div class="hr"></div>
+      <div class="mono" style="color: var(--muted); font-size:12px; margin-bottom:8px;">Add a comment</div>
+      <div class="comment-box">
+        <div class="comment-tabs" role="tablist" aria-label="Comment tabs">
+          <button class="comment-tab" id="${id("tabWrite")}" role="tab" aria-selected="true" data-tab="write">Write</button>
+          <button class="comment-tab" id="${id("tabPreview")}" role="tab" aria-selected="false" data-tab="preview">Preview</button>
+        </div>
+        <div class="comment-editor" id="${id("commentEditor")}">
+          <textarea id="${id("humanComment")}" class="textarea" placeholder="Réponse humaine (Markdown) — hypothèses, points à corriger, décision, etc."></textarea>
+          <div class="actions-row" style="margin-top:10px; justify-content:space-between;">
+            <div>${decisionRowHtml}</div>
+            <button class="gh-btn" data-action="add-comment">Comment</button>
+          </div>
+        </div>
+        <div class="comment-editor hidden" id="${id("commentPreviewWrap")}">
+          <div class="comment-preview" id="${id("commentPreview")}"></div>
+          <div class="actions-row" style="margin-top:10px; justify-content:space-between;">
+            <div>${decisionRowHtml}</div>
+            <button class="gh-btn" data-action="add-comment">Comment</button>
+          </div>
         </div>
       </div>
-      <div class="comment-editor hidden" id="commentPreviewWrap">
-        <div class="comment-preview" id="commentPreview"></div>
-        <div class="actions-row" style="margin-top:10px; justify-content:space-between;">
-          <div>${decisionRowHtml}</div>
-          <button class="gh-btn" data-action="add-comment">Comment</button>
-        </div>
-      </div>
-    </div>
-  ` : "";
+    ` : "";
+  }
+
 
   const contentHtml = `
     <div style="display:flex; align-items: baseline; justify-content: space-between; gap: 12px;">
@@ -623,11 +628,11 @@ function renderDetails() {
     </div>
     ${body}
     ${threadHtml}
-    ${commentBoxHtml}
+    ${{COMMENT_BOX}}
   `;
 
-  host.innerHTML = contentHtml;
-  if (hostModal) hostModal.innerHTML = contentHtml;
+  host.innerHTML = contentHtml.replace("{{COMMENT_BOX}}", commentBoxHtmlFor(""));
+  if (hostModal) hostModal.innerHTML = contentHtml.replace("{{COMMENT_BOX}}", commentBoxHtmlFor("Modal"));
 
   // wire decision buttons
   // wire decision buttons + comment box (main + modal)
@@ -636,7 +641,7 @@ function renderDetails() {
     root.querySelectorAll("[data-action='decide']").forEach((btn) => {
       btn.onclick = () => {
         const decision = btn.getAttribute("data-decision");
-        const note = (el("humanComment")?.value || "").trim();
+        const note = (ta?.value || "").trim();
         setDecision(decisionTarget.type, decisionTarget.id, decision, note);
         renderDetails();
       };
@@ -644,22 +649,22 @@ function renderDetails() {
 
     root.querySelectorAll("[data-action='add-comment']").forEach((addBtn) => {
       addBtn.onclick = () => {
-        const msg = (el("humanComment")?.value || "").trim();
+        const msg = (ta?.value || "").trim();
         if (!msg) return;
         addComment(decisionTarget.type, decisionTarget.id, msg);
-        el("humanComment").value = "";
+        ta.value = "";
         renderDetails();
       };
     });
 
     // tabs + preview
-    const tabWrite = root.querySelector("#tabWrite");
-    const tabPreview = root.querySelector("#tabPreview");
-    const editor = root.querySelector("#commentEditor");
-    const previewWrap = root.querySelector("#commentPreviewWrap");
-    const preview = root.querySelector("#commentPreview");
-    const ta = root.querySelector("#humanComment");
-
+    const tabWrite = root.querySelector("[id^='tabWrite']");
+    const tabPreview = root.querySelector("[id^='tabPreview']");
+    const editor = root.querySelector("[id^='commentEditor']");
+    const previewWrap = root.querySelector("[id^='commentPreviewWrap']");
+    const preview = root.querySelector("[id^='commentPreview']");
+    const ta = root.querySelector("[id^='humanComment']");
+    
     function setTab(which) {
       const isWrite = which === "write";
       if (tabWrite) tabWrite.setAttribute("aria-selected", String(isWrite));

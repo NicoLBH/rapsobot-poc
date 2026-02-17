@@ -1017,10 +1017,8 @@ try {
     }
 
     // Still running
-    const meta = status ? status : "IN_PROGRESS";
-    showBanner("info", `Analyse en cours… pol #${tries} · status: ${meta}`);
     setRunMeta(runId);
-    setSystemStatus("running", "En cours d’analyse", meta);
+
 
     await new Promise(r => setTimeout(r, computePollDelayMs(tries, progress)));
   }

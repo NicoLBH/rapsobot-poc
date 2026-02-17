@@ -2,7 +2,7 @@
 :root{
   --bg:#0d1117;
   --panel2:#161b22;
-  --headbg:rgb(21,27,35);
+  --headbg:rgb(1, 4, 9); /*rgb(21,27,35);*/
   --text:#c9d1d9;
   --muted:#8b949e;
   --border:#30363d;
@@ -33,7 +33,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);ove
   align-items:center;
   gap:12px;
   padding:12px 16px;
-  background:var(--bg);
+  background:var(--headbg);
   border-bottom:1px solid var(--border);
 }
 .gh-header__left{display:flex;align-items:center;gap:12px;min-width:0;justify-self:start;}

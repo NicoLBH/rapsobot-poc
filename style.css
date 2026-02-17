@@ -423,9 +423,9 @@ body.banner-visible .gh-page{top:calc(var(--header-h) + 64px);}
   border:1px solid rgba(0,0,0,.18);
   white-space:nowrap;
 }
-.verdict-F{background-color:rgb(169, 196, 9);}
-.verdict-D{background-color:rgb(163, 16, 14); color:#fff;}
-.verdict-S{background-color:rgb(251, 232, 104);}
+.verdict-F{background-color:rgb(41, 163, 96);}
+.verdict-D{background-color:rgb(248, 81, 73); color:#fff;}
+.verdict-S{background-color:rgb(241, 224, 90);}
 .verdict-HM{background-color:rgb(211, 233, 244);}
 .verdict-PM{background-color:rgb(211, 189, 146);}
 .verdict-SO{background-color:rgb(20, 31, 53); color:#fff;}

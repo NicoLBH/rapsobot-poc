@@ -11,6 +11,8 @@
   --accent:#58a6ff;
   --danger:#f85149;
   --success:#3fb950;
+  --fgColor-open:rgb(63, 185, 80);
+  --fgColor-done:rgb(171, 125, 248);
 
   --radius:6px;
   --radius2:10px;

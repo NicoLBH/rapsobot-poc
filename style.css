@@ -694,4 +694,5 @@ body.is-resizing{
 .gh-comment-body{
   padding:12px;
   white-space:inherit;
+  font-size:14px;
 }

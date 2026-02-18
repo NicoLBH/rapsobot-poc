@@ -11,8 +11,6 @@
   --accent:#58a6ff;
   --danger:#f85149;
   --success:#3fb950;
-  --fgColor-open:rgb(63, 185, 80);
-  --fgColor-done:rgb(171, 125, 248);
 
   --radius:6px;
   --radius2:10px;
@@ -119,9 +117,6 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);ove
 .gh-field{display:flex;flex-direction:column;gap:6px;}
 .gh-field__label{font-size:12px;color:var(--muted);margin-top:8px;}
 .gh-field__help{font-size:11px;color:var(--muted);}
-
-.octicon-issue-closed{color:var(--fgColor-done)};
-.octicon-issue-opened{color:var(--fgColor-open)};
 
 /* Layout */
 .gh-page{

@@ -325,24 +325,22 @@ body:not(.sidebar-collapsed) .sidebar-fab{display:none;}
 .details-main{min-width:0;}
 .details-meta-col{
   /* GitHub-like sidebar card */
-  border:1px solid var(--border);
   border-radius:var(--radius);
-  background:var(--panel2);
   padding:16px;
   height:100%;
   overflow:auto;
 }
 .meta-title{
-  font-size:12px;
-  color:var(--muted);
-  font-weight:700;
+  font-size:16px;
+  color:#fff;
+  font-weight:600;
   margin-bottom:12px;
   letter-spacing:.02em;
 }
 .meta-item{margin-bottom:10px;}
-.meta-item:last-child{margin-bottom:0;}
-.meta-k{font-size:12px;color:var(--muted);}
-.meta-v{font-size:13px;margin-top:2px;word-break:break-word;}
+.meta-item:last-child{margin-bottom:0;border-bottom: solid 1px var(--border);padding-bottom: 16px;}
+.meta-k{font-size:12px;color:var(--muted);font-weight: 600;}
+.meta-v{font-size:13px;margin-top:2px;word-break:break-word;color: var(--muted);font-weight: 400;}
 
 /* When the right panel is narrow, stack metadata under main */
 @container (max-width: 750px){

@@ -164,7 +164,8 @@ function statusBadgeHtml(status) {
   const isClosed = (s === "CLOSED" || s === "DONE" || s === "OK");
   const label = isClosed ? "Closed" : "Open";
   const cls = isClosed ? "gh-state gh-state--closed" : "gh-state gh-state--open";
-  return `<span class="${cls}"><span class="gh-state-dot" aria-hidden="true"></span>${label}</span>`;
+  const svg = isClosed ?  SVG_ISSUE_CLOSED : SVG_ISSUE_OPEN;
+  return `<span class="${cls}"><span class="gh-state-dot" aria-hidden="true">${svg}</span>${label}</span>`;
 }
 
 function verdictLabelFr(v) {
@@ -644,7 +645,7 @@ function renderDetails() {
     const badgeCls = badgeVerdict(a.verdict);
     const titleText = escapeHtml(a.topic ? a.topic : a.avis_id);
     const idText = escapeHtml(a.avis_id);
-    setDetailsTitleHtml(`${statusBadgeHtml(a.status)}<span class="details-title-text"> ${titleText}</span><span class="details-title-id mono"> #${idText}</span><span class="${badgeCls} gh-verdict-pill">${escapeHtml(v)}</span>`);
+    setDetailsTitleHtml(`<span class="${badgeCls} gh-verdict-pill">${escapeHtml(v)}</span><span class="details-title-text"> ${titleText}</span><span class="details-title-id mono"> #${idText}</span>`);
   } else if (p) {
     const titleText = escapeHtml(p.topic ? p.topic : p.problem_id);
     const idText = escapeHtml(p.problem_id);

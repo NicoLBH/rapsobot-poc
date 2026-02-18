@@ -398,8 +398,8 @@ body.banner-visible .gh-page{top:calc(var(--header-h) + 64px);}
 .lvl2{padding-left:44px;}
 
 .theme-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.theme-text--sit{font-weight:700;font-size:small;}
-.theme-text--pb{font-weight:600;font-size:small;}
+.theme-text--sit{font-weight:700;font-size:small;text-transform:uppercase;}
+.theme-text--pb{font-weight:600;font-size:small;text-transform:uppercase;}
 .theme-text--avis{font-size:small;color:var(--text);font-weight:400;}
 
 .cell-id{

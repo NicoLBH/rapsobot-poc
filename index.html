@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RAPSOBOT PoC — UI</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header class="gh-header">
+    <div class="gh-header__left">
+      <a class="gh-brand" href="./" aria-label="RAPSOBOT">
+        <img class="gh-brand__logo" src="logo.png" alt="RAPSOBOT" />
+        <span class="gh-brand__name">RAPSOBOT</span>
+        <span class="gh-brand__sep">/</span>
+        <span class="gh-brand__repo">rapsobot-poc</span>
+      </a>
+    </div>
+
+    <div class="gh-header__center">
+      <button id="runBtnTop" class="gh-btn gh-btn--primary">Run analysis</button>
+    </div>
+
+    <div class="gh-header__right">
+      <div class="gh-header__right-mid">
+        <button id="resetBtnTop" class="gh-btn">Reset</button>
+        <div id="runMetaTop" class="gh-meta mono"></div>
+      </div>
+
+      <div class="gh-header__right-end">
+        <div class="sys-status" title="État du système">
+          <span class="sys-status__dot" id="sysDot" aria-hidden="true"></span>
+          <span class="sys-status__label" id="sysLabel">Idle</span>
+          <span class="sys-status__meta" id="sysMeta">—</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div id="topBanner" class="gh-banner hidden" role="status" aria-live="polite"></div>
+<main class="gh-page gh-page--3col">
+    <button id="sidebarToggleFloating" class="icon-btn sidebar-fab" aria-label="Afficher le menu" title="Afficher le menu">☰</button>
+    <!-- LEFT: Inputs (retractable) -->
+    <section class="gh-sidebar" aria-label="Inputs" id="sidebar">
+      <div class="gh-panel__head gh-sidebar__head">
+        <div class="sidebar-head-left">
+          <button id="sidebarToggle" class="icon-btn" aria-label="Toggle sidebar" title="Toggle sidebar">☰</button>
+          <h2 class="gh-panel__title">Inputs</h2>
+        </div>
+      </div>
+
+      <div class="gh-sidebar__section">
+        <div class="gh-sidebar__sectionTitle">Paramètres projet</div>
+
+        <label class="gh-field">
+          <span class="gh-field__label">Commune + CP</span>
+          <input id="communeCp" class="gh-input" type="text" placeholder="ex: 74950 Scionzier" />
+        </label>
+
+        <label class="gh-field">
+          <span class="gh-field__label">Catégorie d’importance</span>
+          <select id="importance" class="gh-input">
+            <option value="je ne sais pas">je ne sais pas</option>
+            <option value="I">I</option>
+            <option value="II">II</option>
+            <option value="III">III</option>
+            <option value="IV">IV</option>
+          </select>
+        </label>
+
+        <label class="gh-field">
+          <span class="gh-field__label">Classe de sol</span>
+          <select id="soilClass" class="gh-input">
+            <option value="je ne sais pas">je ne sais pas</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+            <option value="E">E</option>
+            <option value="S1">S1</option>
+            <option value="S2">S2</option>
+          </select>
+        </label>
+
+        <label class="gh-field">
+          <span class="gh-field__label">Liquéfaction</span>
+          <select id="liquefaction" class="gh-input">
+            <option value="je ne sais pas">je ne sais pas</option>
+            <option value="non">non</option>
+            <option value="oui">oui</option>
+          </select>
+        </label>
+
+        <label class="gh-field">
+          <span class="gh-field__label">Référentiel</span>
+          <select id="referential" class="gh-input">
+            <option value="Eurocode 8">Eurocode 8</option>
+            <option value="PS-MI 89 révisées 92" disabled>PS-MI 89 révisées 92</option>
+            <option value="CP-MI Antilles" disabled>CP-MI Antilles</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="gh-sidebar__divider" role="separator" aria-hidden="true"></div>
+
+      <div class="gh-sidebar__section">
+        <div class="gh-sidebar__sectionTitle">PDF</div>
+        <label class="gh-field">
+          <span class="gh-field__label">PDF (depuis l’ordinateur)</span>
+          <input id="pdfFile" class="gh-input" type="file" accept="application/pdf" />
+        </label>
+      </div>
+
+      <div class="gh-sidebar__divider" role="separator" aria-hidden="true"></div>
+
+      <div class="gh-sidebar__section">
+        <div class="gh-sidebar__sectionTitle">Connexion</div>
+
+        <label class="gh-field">
+          <span class="gh-field__label">Webhook URL (n8n)</span>
+          <input id="webhookUrl" class="gh-input" type="url" placeholder="https://.../webhook-test/rapsobot-poc" />
+          <div class="gh-field__help">Peut aussi venir du query param <span class="mono">?webhookUrl=...</span></div>
+        </label>
+      </div>
+</section>
+
+    <!-- MIDDLE: Results -->
+    <section class="gh-panel gh-panel--results" aria-label="Results">
+      <div class="gh-panel__head gh-panel__head--tight">
+  <div class="results-bar">
+    <div class="results-bar__left">
+      <h2 class="gh-panel__title">Results</h2>
+
+      <div class="gh-filters gh-filters--inline">
+        <label class="gh-filter gh-filter--inline">
+          <span>Verdict</span>
+          <select id="verdictFilter" class="gh-input gh-input--sm">
+            <option value="ALL">All</option>
+            <option value="F">F</option>
+            <option value="D">D</option>
+            <option value="S">S</option>
+            <option value="HM">HM</option>
+            <option value="PM">PM</option>
+            <option value="SO">SO</option>
+          </select>
+        </label>
+
+        <label class="gh-filter gh-filter--inline">
+          <span>Search</span>
+          <input id="searchBox" class="gh-input gh-input--sm" type="text" placeholder="topic / EC8 / mot-clé…" />
+        </label>
+      </div>
+    </div>
+
+    <div class="results-bar__right">
+      <div class="issues-totals mono" id="issuesTotals">—</div>
+    </div>
+  </div>
+</div>
+
+      <div id="issuesTable" class="gh-issues emptyState">
+        <h1><B>WELCOME</B><h2> to RAPSOBOT Prouf Of Concept</h2>🎉</h1>
+        <h3>Comment ça marche</h3>
+        <span>Saississez dans le menu de gauche la "vérité" de votre projet : les données d'entrée validées par humain comme étant vraies... sinon comment distinguer le vrai du faux dans un document !</span> </br>
+        <span>Chargez votre document pdf</span></br>
+        <span>Et cliquez sur le bouton "Run anlysis"</span></br>
+        <span>... et soyez patient : les analyses peuvent prendre entre 1 à 6 minutes selon la taille du pdf</span></br></br>
+        <h3>Limites du PoC</h3>
+        <span>Le seul Référentiel pris en charge est l'<B>Eurocode 8</B> avec son Annexe Nationale <B>Française</B> et l'Arrêté du 22 octobre 2010.</span> </br>
+        <span>Seules les <B>Notes de Calcul</B> au format pdf sont prises en charge (pas de plans, pas de modèle 3D...</span></br>
+        <span>Et cliquez sur le bouton "Run anlysis"</span></br></br>
+        --- Please Envoy Now 🎈 ---
+      </div>
+    </section>
+
+    <!-- RIGHT: Details / Discussion -->
+    <section class="gh-panel gh-panel--details" aria-label="Details">
+      <div class="gh-panel__head gh-panel__head--tight">
+        <div class="details-head">
+          <div class="details-head-left">
+            <div class="details-kicker mono">DÉTAILS</div>
+            <h2 class="gh-panel__title" id="detailsTitle">Sélectionner un élément</h2>
+          </div>
+
+          <div class="details-head-right">
+            <div class="details-meta mono" id="detailsMeta">—</div>
+            <button id="detailsExpand" class="icon-btn icon-btn--sm" aria-label="Agrandir" title="Agrandir">⤢</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="details-body" id="detailsBody">
+        <div class="emptyState">Sélectionne une situation / un sujet / un avis pour afficher les détails.</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Details fullscreen modal -->
+  <div id="detailsModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Détails">
+    <div class="modal__inner">
+      <div class="modal__head">
+        <div class="modal__head-left">
+          <div class="details-kicker mono">DÉTAILS</div>
+          <div class="modal__title" id="detailsTitleModal">Sélectionner un élément</div>
+        </div>
+        <div class="modal__head-right">
+          <div class="details-meta mono" id="detailsMetaModal">—</div>
+          <button id="detailsClose" class="icon-btn icon-btn--sm" aria-label="Fermer" title="Fermer">✕</button>
+        </div>
+      </div>
+      <div class="modal__body" id="detailsBodyModal"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

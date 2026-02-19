@@ -537,6 +537,25 @@ function renderDetails() {
     `;
   };
 
+
+  const buildVerdictBarHtml = (counts) => {
+    const order = ["D","S","F","HM","PM","SO"];
+    const total = order.reduce((t,v) => t + (Number(counts?.[v]) || 0), 0);
+    if (!total) return "";
+    const items = order
+      .map((v) => ({ v, c: Number(counts?.[v]) || 0 }))
+      .filter((x) => x.c > 0);
+    const segs = items.map(({v,c}) => {
+      const pct = (c * 100) / total;
+      return `<span class="verdict-bar__seg verdict-bar__seg--${v.toLowerCase()}" style="width:${pct.toFixed(4)}%"></span>`;
+    }).join("");
+    const legend = items.map(({v,c}) => {
+      const pct = (c * 100) / total;
+      return `<span class="verdict-legend__item"><span class="v-dot v-dot--${v.toLowerCase()}" aria-hidden="true"></span><span class="verdict-legend__count"><b>${c} avis</b></span><span class="verdict-legend__pct"> - ${pct.toFixed(1)}%</span></span>`;
+    }).join("");
+    return `<div class="subissues-counts subissues-counts--verdicts"><div class="verdict-bar" role="img" aria-label="Répartition des avis">${segs}</div><div class="verdict-legend">${legend}</div></div>`;
+  };
+
   const buildSubIssuesForProblem = (pb, selectedAvisId) => {
     const avById = indexBy(d.avis || [], "avis_id");
     const avisAll = (pb?.avis_ids || []).map((aid) => avById.get(idFromAny(aid))).filter(Boolean);
@@ -550,9 +569,7 @@ function renderDetails() {
       const v = String(ax?.verdict || "").toUpperCase();
       if (verdictCounts[v] !== undefined) verdictCounts[v] += 1;
     }
-    const verdictCountsHtml = `<div class="subissues-counts subissues-counts--verdicts">
-      ${verdictOrder.map(v => `<span class="subissues-verdict-item"><span class="v-dot v-dot--${v.toLowerCase()}" aria-hidden="true"></span><span class="mono">${verdictCounts[v]}</span></span>`).join("")}
-    </div>`;
+    const verdictCountsHtml = buildVerdictBarHtml(verdictCounts);
 
     const rows = avisFiltered.map((a2) => {
       const sel = (selectedAvisId && a2.avis_id === selectedAvisId) ? " subissue-row--selected" : "";
@@ -607,9 +624,7 @@ function renderDetails() {
       }
     }
 
-    const verdictCountsHtml = `<div class="subissues-counts subissues-counts--verdicts">
-      ${verdictOrder.map(v => `<span class="subissues-verdict-item"><span class="v-dot v-dot--${v.toLowerCase()}" aria-hidden="true"></span><span class="mono">${verdictCounts[v]}</span></span>`).join("")}
-    </div>`;
+    const verdictCountsHtml = buildVerdictBarHtml(verdictCounts);
 
     const metaHtml = `<div class="subissues-head-meta">
       <div class="subissues-counts subissues-counts--problems"><span class="subissues-count-closed mono">${closedPb}</span>/<span class="subissues-count-total mono">${totalPb}</span></div>
@@ -866,10 +881,7 @@ function renderDetails() {
     if (isComment) {
       const ts = e?.ts ? `<div class="mono-small">${escapeHtml(e.ts)}</div>` : "";
       return `
-        <div class="thread-item thread-item--comment" data-thread-kind="comment" data-thread-idx="${idx}">
-          <div class="thread-badge__subissue" aria-hidden="true">
-            <svg aria-hidden="true" focusable="false" class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" display="inline-block" overflow="visible" style="vertical-align: text-bottom;"><path d="M1.5 8a6.5 6.5 0 0 1 13 0A.75.75 0 0 0 16 8a8 8 0 1 0-8 8 .75.75 0 0 0 0-1.5A6.5 6.5 0 0 1 1.5 8Z"></path><path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm1.5 1.75a.75.75 0 0 1 .75-.75h5a.75.75 0 0 1 0 1.5h-5a.75.75 0 0 1-.75-.75Zm2.75 2.25a.75.75 0 0 0 0 1.5h3a.75.75 0 0 0 0-1.5h-3Z"></path></svg>
-          </div>
+        <div class="thread-item thread-item--comment thread-item--comment--flush" data-thread-kind="comment" data-thread-idx="${idx}">
           <div class="thread-wrapper">
             <div class="gh-comment">
               <div class="gh-avatar gh-avatar--human" aria-hidden="true">${SVG_AVATAR_HUMAN}</div>
@@ -918,7 +930,7 @@ function renderDetails() {
   function commentBoxHtmlFor(suffix) {
     const id = (base) => `${base}${suffix}`;
 
-    const commentBtn = `<button class="gh-btn gh-btn--primary" data-action="add-comment">Comment</button>`;
+    const commentBtn = `<button class="gh-btn gh-btn--comment is-disabled" data-action="add-comment" type="button" disabled>Comment</button>`;
 
     // Situation / Sujet actions (GitHub-like)
     const issueStatus = (p ? p.status : (s ? s.status : "open"));
@@ -982,6 +994,20 @@ function renderDetails() {
   const wireHost = (root) => {
     if (!root || !decisionTarget) return;
     const ta = root.querySelector("[id^=\'humanComment\']");
+    const commentBtns = Array.from(root.querySelectorAll("[data-action='add-comment']"));
+    function syncCommentBtnState() {
+      const hasText = !!(ta && ta.value.trim());
+      for (const b of commentBtns) {
+        b.disabled = !hasText;
+        b.classList.toggle("is-disabled", !hasText);
+        b.classList.toggle("is-enabled", hasText);
+      }
+    }
+    if (ta) {
+      ta.addEventListener("input", syncCommentBtnState);
+      syncCommentBtnState();
+    }
+
     root.querySelectorAll("[data-action='decide']").forEach((btn) => {
       btn.onclick = () => {
         const decision = btn.getAttribute("data-decision");

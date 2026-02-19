@@ -480,16 +480,16 @@ function renderDetails() {
   };
 
   const ghDescriptionCard = (agentName, bodyHtml) => {
-    const name = String(agentName || "system");
-    const initial = (name.trim()[0] || "S").toUpperCase();
+    const name = String("Agent " + agentName || "Agent System");
+    const initial = ("A" + name.trim()[0] || "AS").toUpperCase();
     return `
-      <div class="gh-comment">
+    <div class="gh-comment">
         <div class="gh-avatar" aria-hidden="true"><span class="gh-avatar-initial">${escapeHtml(initial)}</span></div>
         <div class="gh-comment-box">
           <div class="gh-comment-header">
             <div class="gh-comment-author mono">${escapeHtml(name)}</div>
           </div>
-          <div class="gh-comment-body">${bodyHtml || ""}</div>
+          <div class="gh-comment-body">${bodyHtml || "Pas de remarque particulière à formuler."}</div>
         </div>
       </div>
     `;
@@ -804,22 +804,19 @@ function renderDetails() {
 
   const thread = getThreadForSelection();
   const threadHtml = thread.length ? `
-    <div class="hr"></div>
-    <div class="gh-timeline-title mono">Discussion</div>
+    <div class="gh-timeline-title mono" style="display:none">Discussion</div>
     <div class="thread gh-thread">
-      ${thread.map((e) => `
+      ${thread.map(e => e.reverse(e) => `
         <div class="thread-item">
           <div class="thread-item__head">
             <div>
-              <span class="mono">${escapeHtml(e.actor || "System")}</span>
+              <span class="mono">${escapeHtml(e.actor || "Agent System")}</span>
+              <span> attached this to </span>
+              <span class="mono">${escapeHtml(e.entity_type || "")} n° ${escapeHtml(e.entity_id || "")}</span>
               <span>·</span>
-              <span class="mono">${escapeHtml(e.type || "")}</span>
-              <span>·</span>
-              <span class="mono">${escapeHtml(e.entity_type || "")}:${escapeHtml(e.entity_id || "")}</span>
-              <span>·</span>
-              <span class="mono">agent=${escapeHtml(e.agent || "system")}</span>
+              <span class="mono"> (agent=${escapeHtml(e.agent || "system")} )</span>
             </div>
-            <div class="mono">${escapeHtml(e.ts || "")}</div>
+            <div class="mono">in ${escapeHtml(e.ts || "")}</div>
           </div>
           <div class="thread-item__body">${escapeHtml(e.message || "")}</div>
         </div>
@@ -1099,7 +1096,7 @@ function renderMiddle() {
 
   if (!d || !Array.isArray(d.situations) || !Array.isArray(d.problems) || !Array.isArray(d.avis)) {
     host.classList.add("emptyState");
-    host.textContent = "Run an analysis to display situations.";
+    host.textContent = "Welcome to RAPSOBOT PoC ! Saississez la référence de Vérité (données de référence qui seront comparées aux informations du Document Examiné). Chargez votre note de calcul parasismique et cliquez sur Run analysis.... et attendez (3 à 6 minutes selon le pdf)";
     if (counts) if (counts) counts.textContent = "—";
     const pageInfoEl = el("pageInfo"); if (pageInfoEl) pageInfoEl.textContent = "1 / 1";
     renderDetails();

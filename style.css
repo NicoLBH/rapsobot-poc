@@ -689,8 +689,14 @@ body.is-resizing{
   line-height:1;
 }
 
+.human-action{
+overflow: hidden;
+margin-top: 20px;
+padding-left: 40px;
+}
 .gh-avatar--human{
   color:var(--text);
+  display:inline-block;
 }
 .gh-avatar--human svg{
   width:22px;

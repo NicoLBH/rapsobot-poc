@@ -1103,12 +1103,12 @@ function renderMiddle() {
     host.classList.add("emptyState");
     host.innerHTML = `
       <div class="empty-welcome">
-        <h1><b>WELCOME</b><br><span style="font-size:18px;font-weight:400;">to RAPSOBOT Proof Of Concept 🎉</span></h1>
+        <h1><b>WELCOME</b><span style="font-size:18px;font-weight:400;">to RAPSOBOT Proof Of Concept 🎉</span></h1>
     
         <h3>Comment ça marche</h3>
         <p>
           Saisissez dans le menu de gauche la <b>"vérité"</b> de votre projet :
-          les données d'entrée validées par un humain comme étant vraies.
+          les données d'entrée validées par un humain comme <b>Référence de Vérité</b>.
         </p>
         <p>Chargez votre document PDF</p>
         <p>Cliquez sur le bouton <b>"Run analysis"</b></p>
@@ -1121,12 +1121,12 @@ function renderMiddle() {
           Référentiel supporté :
           <b>Eurocode 8</b> + Annexe Nationale Française + Arrêté du 22 octobre 2010.
         </p>
-        <p>
+        <p style="width:100%;height:1px;margin-top:10px;margin-bottom:10px;background-color:var(--border)">
           Seules les <b>Notes de Calcul</b> PDF sont prises en charge
           (pas de plans, pas de modèle 3D…).
         </p>
     
-        <hr>
+        <div style="width:100%;height:1px;margin-top:10px;margin-bottom:10px;background-color:var(--border)"/>
         <div style="font-weight:600;margin-top:10px;">
           --- Please Enjoy Now 🎈 ---
         </div>

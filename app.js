@@ -806,7 +806,7 @@ function renderDetails() {
   const threadHtml = thread.length ? `
     <div class="gh-timeline-title mono" style="display:none">Discussion</div>
     <div class="thread gh-thread">
-      ${thread.map((e => e.reverse(e)) => `
+      ${[...thread].reverse().map((e) => `
         <div class="thread-item">
           <div class="thread-item__head">
             <div>

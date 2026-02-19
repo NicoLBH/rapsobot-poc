@@ -1903,7 +1903,7 @@ function resetUI() {
   if (el("pdfFile")) el("pdfFile").value = "";
 
   setIssuesTotals(null);
-  setDetailsMeta(\"—\");
+  setDetailsMeta("—");
   renderMiddle();
 }
 

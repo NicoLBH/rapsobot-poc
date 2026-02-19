@@ -545,7 +545,7 @@ function renderDetails() {
     `;
 
     return subIssuesPanel({
-      title: "Avis",
+      title: "Avis rattachés",
       count: avisFiltered.length,
       isOpen: state.rightSubissuesOpen,
       bodyHtml: body,
@@ -612,7 +612,7 @@ function renderDetails() {
     `;
 
     return subIssuesPanel({
-      title: "Sub-issues",
+      title: "Sujets rattachés",
       count: problems.length,
       isOpen: state.rightSubissuesOpen,
       bodyHtml: body,

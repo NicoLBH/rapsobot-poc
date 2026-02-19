@@ -905,12 +905,12 @@ function renderDetails() {
         </div>
         <div class="thread-wrapper">
           <div class="thread-item__head">
-            <div>
-              <span class="mono">${escapeHtml(e.actor || "Agent System")}</span>
+            <div class="mono">
+              <span >${escapeHtml(e.actor || "Agent System")}</span>
               <span> attached this to </span>
-              <span class="mono">${escapeHtml(e.entity_type || "")} n° ${escapeHtml(e.entity_id || "")}</span>
+              <span >${escapeHtml(e.entity_type || "")} n° ${escapeHtml(e.entity_id || "")}</span>
               <span>·</span>
-              <span class="mono"> (agent=${escapeHtml(e.agent || "system")} )</span>
+              <span> (agent=${escapeHtml(e.agent || "system")} )</span>
               <div class="mono">in ${escapeHtml(e.ts || "")}</div>
             </div>
           </div>

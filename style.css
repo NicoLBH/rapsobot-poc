@@ -372,7 +372,7 @@ body:not(.sidebar-collapsed) .sidebar-fab{display:none;}
 .thread-item__head{padding:0px 12px;font-size:12px;color:var(--muted);}
 .thread-item__body{padding:4px 12px;font-size:13px;}
 
-.comment-box{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.comment-box{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-top:10px;}
 .comment-tabs{display:flex;gap:0;border-bottom:1px solid var(--border2);background:rgba(22,27,34,.6);}
 .comment-tab{border:none;background:transparent;color:var(--muted);padding:8px 12px;cursor:pointer;font-size:13px;}
 .comment-tab[aria-selected="true"]{color:var(--text);font-weight:700;}
@@ -690,16 +690,20 @@ body.is-resizing{
 }
 
 .human-action{
-overflow: hidden;
-margin-top: 20px;
-padding-left: 40px;
+  display:flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-top: 10px;
 }
 .comment-general-block{
-display:inline-block;
+  flex: 1 1 auto;
 }
 .gh-avatar--human{
   color:var(--text);
-  display:inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
 }
 .gh-avatar--human svg{
   width:22px;
@@ -855,13 +859,11 @@ display:inline-block;
 
 /* Align section titles + blocks with the description avatar column */
 .gh-timeline-title{
-  margin-left:52px;
   width:calc(100% - 52px);
   color:#fff;
   font-size:16px;
   font-weight:600;
-  margin-bottom:12px;
-  margin-top:16px;
+  line-height:40px;
 }
 
 .gh-thread{
@@ -870,8 +872,7 @@ display:inline-block;
 }
 
 .gh-comment-boxwrap{
-  margin-left:52px;
-  width:calc(100% - 52px);
+  width:100%;
   background:rgba(13,17,23,.92);
 }
 

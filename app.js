@@ -1106,7 +1106,7 @@ function renderMiddle() {
     host.classList.add("emptyState");
     host.innerHTML = `
       <div class="empty-welcome">
-        <h1><b>WELCOME</b><span style="font-size:18px;font-weight:400;">to RAPSOBOT Proof Of Concept 🎉</span></h1>
+        <h1><b>WELCOME</b><span style="font-size:18px;font-weight:400;"> to RAPSOBOT Proof Of Concept 🎉</span></h1>
     
         <h3>Comment ça marche</h3>
         <p>
@@ -1124,13 +1124,13 @@ function renderMiddle() {
           Référentiel supporté :
           <b>Eurocode 8</b> + Annexe Nationale Française + Arrêté du 22 octobre 2010.
         </p>
-        <p style="width:100%;margin-top:10px;margin-bottom:10px">
+        <p>
           Seules les <b>Notes de Calcul</b> PDF sont prises en charge (pas de plans, pas de modèle 3D…).
         </p>
-    
-        <div style="font-weight:600;margin-top:20px;border-top:solid 1px var(--border)">
-          --- Please Enjoy Now 🎈 ---
-        </div>
+        <p>
+          La <b>validation humaine</b> (commentaire, validation, refus...) n'est pas implémentée dans cette version du PoC.
+        </p>
+
       </div>
     `;
     if (counts) if (counts) counts.textContent = "—";

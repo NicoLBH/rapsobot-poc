@@ -808,17 +808,22 @@ function renderDetails() {
     <div class="thread gh-thread">
       ${thread.map((e) => `
         <div class="thread-item">
-          <div class="thread-item__head">
-            <div>
-              <span class="mono">${escapeHtml(e.actor || "Agent System")}</span>
-              <span> attached this to </span>
-              <span class="mono">${escapeHtml(e.entity_type || "")} n° ${escapeHtml(e.entity_id || "")}</span>
-              <span>·</span>
-              <span class="mono"> (agent=${escapeHtml(e.agent || "system")} )</span>
-            </div>
-            <div class="mono">in ${escapeHtml(e.ts || "")}</div>
+          <div class="thread-badge__subissue">
+            <svg aria-hidden="true" focusable="false" class="octicon octicon-issue-tracks Octicon__StyledOcticon-sc-jtj3m8-0 TimelineRow-module__Octicon__SMhVa" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" display="inline-block" overflow="visible" style="vertical-align: text-bottom;"><path d="M1.5 8a6.5 6.5 0 0 1 13 0A.75.75 0 0 0 16 8a8 8 0 1 0-8 8 .75.75 0 0 0 0-1.5A6.5 6.5 0 0 1 1.5 8Z"></path><path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm1.5 1.75a.75.75 0 0 1 .75-.75h5a.75.75 0 0 1 0 1.5h-5a.75.75 0 0 1-.75-.75Zm2.75 2.25a.75.75 0 0 0 0 1.5h3a.75.75 0 0 0 0-1.5h-3Z"></path></svg>
           </div>
-          <div class="thread-item__body">${escapeHtml(e.message || "")}</div>
+          <div class="thread-wrapper">
+            <div class="thread-item__head">
+              <div>
+                <span class="mono">${escapeHtml(e.actor || "Agent System")}</span>
+                <span> attached this to </span>
+                <span class="mono">${escapeHtml(e.entity_type || "")} n° ${escapeHtml(e.entity_id || "")}</span>
+                <span>·</span>
+                <span class="mono"> (agent=${escapeHtml(e.agent || "system")} )</span>
+                <div class="mono">in ${escapeHtml(e.ts || "")}</div>
+              </div>
+            </div>
+            <div class="thread-item__body">${escapeHtml(e.message || "")}</div>
+          </div>
         </div>
       `).join("")}
     </div>

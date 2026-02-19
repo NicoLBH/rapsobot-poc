@@ -135,7 +135,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);ove
   gap:16px;
   overflow:hidden;
 }
-.gh-page--3col{column-gap: 12px;grid-template-columns: 340px 1fr 12px var(--rightW, 420px);}
+.gh-page--3col{column-gap: 12px;grid-template-columns: 340px 1fr 0px var(--rightW, 420px);}
 @media (max-width:900px){ .gh-page--3col{grid-template-columns:1fr;} }
 
 /* Sidebar collapsed */

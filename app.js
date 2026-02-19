@@ -1096,7 +1096,37 @@ function renderMiddle() {
 
   if (!d || !Array.isArray(d.situations) || !Array.isArray(d.problems) || !Array.isArray(d.avis)) {
     host.classList.add("emptyState");
-    host.textContent = "Welcome to RAPSOBOT PoC ! Saississez la référence de Vérité (données de référence qui seront comparées aux informations du Document Examiné). Chargez votre note de calcul parasismique et cliquez sur Run analysis.... et attendez (3 à 6 minutes selon le pdf)";
+    host.innerHTML = `
+      <div class="empty-welcome">
+        <h1><b>WELCOME</b><br><span style="font-size:18px;font-weight:400;">to RAPSOBOT Proof Of Concept 🎉</span></h1>
+    
+        <h3>Comment ça marche</h3>
+        <p>
+          Saisissez dans le menu de gauche la <b>"vérité"</b> de votre projet :
+          les données d'entrée validées par un humain comme étant vraies.
+        </p>
+        <p>Chargez votre document PDF</p>
+        <p>Cliquez sur le bouton <b>"Run analysis"</b></p>
+        <p style="color:var(--muted)">
+          ⏳ Les analyses peuvent prendre entre 1 et 6 minutes selon la taille du PDF.
+        </p>
+    
+        <h3>Limites du PoC</h3>
+        <p>
+          Référentiel supporté :
+          <b>Eurocode 8</b> + Annexe Nationale Française + Arrêté du 22 octobre 2010.
+        </p>
+        <p>
+          Seules les <b>Notes de Calcul</b> PDF sont prises en charge
+          (pas de plans, pas de modèle 3D…).
+        </p>
+    
+        <hr>
+        <div style="font-weight:600;margin-top:10px;">
+          --- Please Enjoy Now 🎈 ---
+        </div>
+      </div>
+    `;
     if (counts) if (counts) counts.textContent = "—";
     const pageInfoEl = el("pageInfo"); if (pageInfoEl) pageInfoEl.textContent = "1 / 1";
     renderDetails();

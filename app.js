@@ -1116,13 +1116,11 @@ function renderMiddle() {
           Référentiel supporté :
           <b>Eurocode 8</b> + Annexe Nationale Française + Arrêté du 22 octobre 2010.
         </p>
-        <p style="width:100%;height:1px;margin-top:10px;margin-bottom:10px;background-color:var(--border)">
-          Seules les <b>Notes de Calcul</b> PDF sont prises en charge
-          (pas de plans, pas de modèle 3D…).
+        <p style="width:100%;margin-top:10px;margin-bottom:10px">
+          Seules les <b>Notes de Calcul</b> PDF sont prises en charge (pas de plans, pas de modèle 3D…).
         </p>
     
-        <div style="width:100%;height:1px;margin-top:10px;margin-bottom:10px;background-color:var(--border)"/>
-        <div style="font-weight:600;margin-top:10px;">
+        <div style="font-weight:600;margin-top:20px;border-top:solid 1px var(--border)">
           --- Please Enjoy Now 🎈 ---
         </div>
       </div>

@@ -258,7 +258,7 @@ body:not(.sidebar-collapsed) .sidebar-fab{display:none;}
 }
 
 /* Middle list lines */
-.emptyState{padding:14px 12px;color:var(--muted);font-size:13px;}
+.emptyState{padding:20px 20px;color:var(--muted);font-size:13px;}
 .mid-wrap{padding:10px 12px;}
 .mid-block{margin-bottom:10px;}
 .line{
@@ -693,6 +693,9 @@ body.is-resizing{
 overflow: hidden;
 margin-top: 20px;
 padding-left: 40px;
+}
+.comment-general-block{
+display:inline-block;
 }
 .gh-avatar--human{
   color:var(--text);

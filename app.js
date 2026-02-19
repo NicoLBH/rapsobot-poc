@@ -481,7 +481,7 @@ function renderDetails() {
 
   const ghDescriptionCard = (agentName, bodyHtml) => {
     const name = String("Agent " + agentName || "Agent System");
-    const initial = ("A" + name.trim()[0] || "AS").toUpperCase();
+    const initial = ("A" + agentName.trim()[0] || "AS").toUpperCase();
     return `
     <div class="gh-comment">
         <div class="gh-avatar" aria-hidden="true"><span class="gh-avatar-initial">${escapeHtml(initial)}</span></div>
@@ -834,6 +834,7 @@ function renderDetails() {
     const id = (base) => `${base}${suffix}`;
   
     return decisionTarget ? `
+      <div class="gh-avatar" aria-hidden="true"><span class="gh-avatar-initial">HiL</span></div>
       <div class="gh-timeline-title mono">Add a comment</div>
       <div class="comment-box gh-comment-boxwrap">
         <div class="comment-tabs" role="tablist" aria-label="Comment tabs">

@@ -843,22 +843,24 @@ function renderDetails() {
     return decisionTarget ? `
       <div class="human-action">
         <div class="gh-avatar gh-avatar--human" aria-hidden="true">${SVG_AVATAR_HUMAN}</div>
-        <div class="gh-timeline-title mono">Add a comment</div>
-        <div class="comment-box gh-comment-boxwrap">
-          <div class="comment-tabs" role="tablist" aria-label="Comment tabs">
-            <button class="comment-tab" id="${id("tabWrite")}" role="tab" aria-selected="true" data-tab="write">Write</button>
-            <button class="comment-tab" id="${id("tabPreview")}" role="tab" aria-selected="false" data-tab="preview">Preview</button>
+        <div class="comment-general-block">
+          <div class="gh-timeline-title mono">Add a comment</div>
+          <div class="comment-box gh-comment-boxwrap">
+            <div class="comment-tabs" role="tablist" aria-label="Comment tabs">
+              <button class="comment-tab" id="${id("tabWrite")}" role="tab" aria-selected="true" data-tab="write">Write</button>
+              <button class="comment-tab" id="${id("tabPreview")}" role="tab" aria-selected="false" data-tab="preview">Preview</button>
+            </div>
+            <div class="comment-editor" id="${id("commentEditor")}">
+              <textarea id="${id("humanComment")}" class="textarea" placeholder="Réponse humaine (Markdown) — hypothèses, points à corriger, décision, etc."></textarea>
+            </div>
+            <div class="comment-editor hidden" id="${id("commentPreviewWrap")}">
+              <div class="comment-preview" id="${id("commentPreview")}"></div>         
+            </div>
           </div>
-          <div class="comment-editor" id="${id("commentEditor")}">
-            <textarea id="${id("humanComment")}" class="textarea" placeholder="Réponse humaine (Markdown) — hypothèses, points à corriger, décision, etc."></textarea>
+          <div class="actions-row" style="margin-top:10px; justify-content:space-between;">
+              <div>${decisionRowHtml}</div>
+              <button class="gh-btn" data-action="add-comment">Comment</button>
           </div>
-          <div class="comment-editor hidden" id="${id("commentPreviewWrap")}">
-            <div class="comment-preview" id="${id("commentPreview")}"></div>         
-          </div>
-        </div>
-        <div class="actions-row" style="margin-top:10px; justify-content:space-between;">
-            <div>${decisionRowHtml}</div>
-            <button class="gh-btn" data-action="add-comment">Comment</button>
         </div>
       </div>
     ` : "";

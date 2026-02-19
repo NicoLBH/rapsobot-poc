@@ -846,11 +846,11 @@ function renderDetails() {
         <div class="comment-editor hidden" id="${id("commentPreviewWrap")}">
           <div class="comment-preview" id="${id("commentPreview")}"></div>         
         </div>
-        <div class="actions-row" style="margin-top:10px; justify-content:space-between;">
+      </div>
+      <div class="actions-row" style="margin-top:10px; justify-content:space-between;">
           <div>${decisionRowHtml}</div>
           <button class="gh-btn" data-action="add-comment">Comment</button>
         </div>
-      </div>
     ` : "";
   }
 

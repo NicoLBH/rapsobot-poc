@@ -140,7 +140,7 @@ function problemsCountsIconHtml(closedCount, totalCount) {
   return `
     <span class="subissues-problems-icon" aria-label="Sujets closed: ${closed}/${total}">
       <svg viewBox="0 0 20 20" width="16" height="16" style="display:block">
-        <circle cx="${cx}" cy="${cy}" r="${r}" fill="rgba(139,148,158,.20)" stroke="rgba(139,148,158,.55)" stroke-width="1"></circle>
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(139,148,158,.55)" stroke-width="2"></circle>
         ${wedge}
       </svg>
     </span>
@@ -706,7 +706,7 @@ function renderDetails(opts) {
     const verdictCountsHtml = buildVerdictBarHtml(verdictCounts);
 
     const metaHtml = `<div class="subissues-head-meta">
-      <div class="subissues-counts subissues-counts--problems">${problemsCountsIconHtml(closedPb, totalPb)}</div>
+      <div class="subissues-counts subissues-counts--problems">${problemsCountsIconHtml(closedPb, totalPb)}<span>${closedPb} sur ${totalPb}</span></div>
       ${verdictCountsHtml}
     </div>`;
 

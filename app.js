@@ -22,9 +22,9 @@
   style.id = "entity-link-style";
   style.innerHTML = `
     a.entity-link{
-      color: rgb(88,166,255);
       text-decoration: none;
       cursor: pointer;
+      color:rgb(145, 152, 161);
     }
     a.entity-link:hover{
       text-decoration: underline;
@@ -178,7 +178,7 @@ function problemsCountsIconHtml(closedCount, totalCount) {
     const x = cx + r * Math.sin(a);
     const y = cy - r * Math.cos(a);
     const large = a > Math.PI ? 1 : 0;
-    wedge = `<path d="M ${cx} ${cy} L ${cx} ${cy - r} A ${r} ${r} 0 ${large} 1 ${x} ${y} Z" fill="rgba(139,148,158,.55)" opacity="0.75"></path>`;
+    wedge = `<path d="M ${cx} ${cy} L ${cx} ${cy - r} A ${r} ${r} 0 ${large} 1 ${x} ${y} Z" fill="rgba(137,87,229,.55)" opacity="0.75"></path>`;
   }
 
   return `

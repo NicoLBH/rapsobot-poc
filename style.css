@@ -753,17 +753,13 @@ body.is-resizing{
   border:1px solid var(--border);
   border-radius:6px;
   overflow:hidden;
-  background:rgba(22,27,34,.25);
 }
 .subissues-head{
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:12px;
-  padding:0px 12px;
-  background:rgba(22,27,34,.6);
-  border-bottom:1px solid var(--border2);
-  line-height:38px;
+  padding:10px 12px;
 }
 .subissues-head-left{
   display:flex;

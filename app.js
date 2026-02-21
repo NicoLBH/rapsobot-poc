@@ -272,6 +272,9 @@ function verdictLabelFr(v) {
   if (s === "D" || s === "DEFAVORABLE" || s === "DEFAV") return "Défavorable";
   if (s === "S" || s === "SUSPENDU") return "Suspendu";
   if (s === "OK" || s === "F" || s === "FAVORABLE") return "Favorable";
+  if (s === "HM" || s === "HORS MISSION") return "Hors Mission";
+  if (s === "PM" || s === "POUR MEMOIRE") return "Pour Mémoire";
+  if (s === "SO" || s === "SANS OBJET") return "Sans Objet";
   return s || "—";
 }
 

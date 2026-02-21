@@ -913,8 +913,8 @@ function renderDetails(opts) {
       return `
         <span class="verdict-legend__item">
           <span class="v-dot v-dot--${v.toLowerCase()}"></span>
-          <span class="verdict-legend__count"><b>${v}</b> ${c}</span>
-          <span class="verdict-legend__pct">${pct.toFixed(0)}%</span>
+          <span class="verdict-legend__count">${c} <b>${v}</b></span>
+          <span class="verdict-legend__pct">(${pct.toFixed(0)}%)</span>
         </span>`;
     }).join("");
 

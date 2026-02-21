@@ -869,7 +869,7 @@ body.is-resizing{
 }
 .details-title--compact .details-title-compact-col1{display:flex;align-items:center;}
 .details-title--compact .details-title-compact-col2{min-width:0;}
-.details-title--compact .details-title-compact-top{display:flex;align-items:baseline;gap:8px;min-width:0;}
+.details-title--compact .details-title-compact-top{display:flex;align-items:baseline;gap:0px 8px;min-width:0;flex-wrap:wrap;}
 .details-title--compact .details-title-compact-bottom{display:flex;align-items:center;gap:8px;min-width:0;height:16px;}
 .details-title--compact .details-title-compact-bottom .subissues-counts--problems{flex:0 0 auto;margin:0px;border:none;padding:0px 6px 0px 0px;font-weight:400;}
 .details-title--compact .details-title-compact-bottom .verdict-bar{flex:0 1 auto;}
@@ -900,6 +900,8 @@ body.is-resizing{
 .subissues-counts--problems{flex:0 0 auto;min-width:auto;}
 
 @container (max-width: 560px){
+  .details-title--expanded .details-title-text{font-size:18px;line-height:24px;}
+  .details-title--expanded .details-title-id{font-size:14px;}
   .subissues-counts--verdicts .verdict-bar{display:none !important;}
   .subissues-counts--verdicts .verdict-legend{
       display: inline-flex;

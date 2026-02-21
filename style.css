@@ -498,6 +498,7 @@ body.banner-visible .gh-page{top:calc(var(--header-h) + 64px);}
   white-space:nowrap;
   line-height:21px;
   margin-right:8px;
+  min-width:40px;
 }
 .verdict-F{background-color:rgb(41, 163, 96);}
 .verdict-D{background-color:rgb(248, 81, 73); color:#fff;}
@@ -925,7 +926,7 @@ body.is-resizing{
 .details-scrolled .details-title--expanded{display:none;}
 .details-scrolled .details-title--compact{display:block;}
 .details-title-id{ color:var(--muted);}
-.gh-verdict-pill{ margin-left:10px; }
+.gh-verdict-pill{margin-left:0px;}
 
 .v-dot{width:10px;height:10px;border-radius:999px;display:inline-block;margin-right:4px;border:1px solid rgba(240,246,252,.25);background:rgba(139,148,158,.35);}
 .v-dot--d{ background:#f85149; border-color:rgba(248,81,73,.45); }

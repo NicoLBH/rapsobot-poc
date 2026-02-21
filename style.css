@@ -375,7 +375,7 @@ body:not(.sidebar-collapsed) .sidebar-fab{display:none;}
 }
 
 .thread{display:flex;flex-direction:column;gap:12px;}
-.thread-item{position:relative;overflow:hidden;padding-top:20px;padding-left:40px;}
+.thread-item{position:relative;overflow:hidden;padding-top:20px;padding-left:40px;display:flex;align-items:center;gap:30px;}
 .thread-item::before{content: "";position: absolute;left: 20px;top: 0px;bottom: 0px;width: 2px;background: rgba(48, 54, 61, 0.9);z-index: -1000;pointer-events: none;}
 .thread-item.thread-item--comment:first-child::before{display:block;}
 .thread-item--comment .thread-wrapper{width:100%;}
@@ -384,7 +384,7 @@ body:not(.sidebar-collapsed) .sidebar-fab{display:none;}
 .thread-item--comment--flush .thread-badge__subissue{display:none;}
 .thread-item--comment .thread-badge__subissue{margin-top:4px;}
 
-.thread-badge__subissue{color:rgb(145, 152, 161);background-color:rgb(33, 40, 48);border:solid 2px rgb(13, 17, 23);height:32px;width:32px;align-items:center;box-sizing:border-box;line-height:21px;border-radius:32px;display:inline-block;vertical-align:top;margin-left:-36px;padding-left:6px;}
+.thread-badge__subissue{color:rgb(145, 152, 161);background-color:rgb(33, 40, 48);border:solid 2px rgb(13, 17, 23);height:32px;width:32px;align-items:center;border-radius:32px;display:flex;margin-left:-36px;justify-content:center;}
 .thread-wrapper{width:80%;line-height:21px;display:inline-block;vertical-align:top;}
 .thread-item__head{padding:0px 12px;font-size:12px;color:var(--muted);}
 .thread-item__body{padding:0px 12px;font-size:13px;}
@@ -1077,17 +1077,7 @@ body.drilldown-open .drilldown__inner {
   gap:10px;
   padding:4px 12px 8px 57px;
 }
-.tl-ico-wrap{
-  border: solid 2px var(--bg);
-  background-color: rgb(171, 125, 248);
-  border-radius: 999px;
-  height: 32px;
-  width: 32px;
-  align-items: center;
-  box-sizing: border-box;
-  padding-left: 6px;
-  padding-top: 6px;
-}
+.tl-ico-wrap{border: solid 2px var(--bg);border-radius: 999px;height: 32px;width: 32px;align-items: center;display:flex;flex:0 0 auto;justify-content:center;}
 .tl-ico-closed{background-color:var(--fgColor-closed);}
 .tl-ico-reopened{background:var(--fgColor-open);}
 .tl-ico-wrap svg{display:block;}

@@ -1,4 +1,4 @@
-/* v2026-02-22.1 — assist overlay click-outside, pending spinners, tl-note rail, help avatars */
+/* v2026-02-22.2 — assist overlay click-outside, pending spinners, tl-note rail, help avatars */
 :root{
   --bg:#0d1117;
   --bgAssistPanel:rgb(1, 4, 9);
@@ -1286,6 +1286,7 @@ body.drilldown-open .drilldown__inner {
 }
 .assist-input:focus{ border-color: rgba(56,139,253,.55); box-shadow: 0 0 0 3px rgba(56,139,253,.18); }
 .assist-overlay--help .assist-input:focus{ border-color: rgba(46,160,67,.65); box-shadow: 0 0 0 3px rgba(46,160,67,.18); }
+.helpMode:focus{border-color:#2da44e, outline:none;box-shadow:0 0 0 3px rgba(45,164,78, 0.3)}
 .assist-compose__actions{
   display:flex;
   align-items:center;
@@ -1375,8 +1376,8 @@ body.drilldown-open .drilldown__inner {
 }
 
 .help-ephemeral{
-  margin-top:10px;
   margin-bottom:10px;
+  margin-left:52px;
 }
 .gh-comment-avatar--help{
   width:40px;height:40px;
@@ -1407,8 +1408,11 @@ body.drilldown-open .drilldown__inner {
 .gh-comment-header--help{
   background: rgba(46,160,67,.10);
   border-bottom:1px solid rgba(46,160,67,.22);
+  font-family: var(--font);
+  font-size:14px;
 }
 .gh-comment-body--help{
   background: transparent;
+  font-size:13px;
 }
 

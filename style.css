@@ -1,6 +1,7 @@
 /* (le fichier est long — colle exactement ce contenu) */
 :root{
   --bg:#0d1117;
+  --bgAssistPanel:rgb(1, 4, 9);
   --panel2:#161b22;
   --headbg:rgb(1, 4, 9);
   --headbgtight:rgb(21,27,35);
@@ -1156,10 +1157,10 @@ body.drilldown-open .drilldown__inner {
 .assist-panel{
   position:absolute;
   top:0; bottom:0; left:0;
-  width:40vw;
+  width:90vw;
   max-width:720px;
   min-width:360px;
-  background: var(--bg);
+  background: var(--bgAssistPanel);
   border-right:1px solid rgba(240,246,252,.12);
   border-top-right-radius:12px;
   border-bottom-right-radius:12px;
@@ -1176,8 +1177,6 @@ body.drilldown-open .drilldown__inner {
   align-items:center;
   justify-content:space-between;
   padding:14px 16px;
-  border-bottom:1px solid rgba(240,246,252,.12);
-  background: rgb(1,4,9);
 }
 .assist-head__left{ display:flex; align-items:center; gap:12px; min-width:0; }
 .assist-head__logo{
@@ -1196,7 +1195,7 @@ body.drilldown-open .drilldown__inner {
   width:34px; height:34px;
   border-radius:8px;
   border:1px solid rgba(240,246,252,.16);
-  background: rgba(240,246,252,.06);
+  background:transparent;
   color: var(--text);
   cursor:pointer;
 }
@@ -1238,9 +1237,10 @@ body.drilldown-open .drilldown__inner {
   width:2px;
   background: rgba(240,246,252,.08);
   border-radius:2px;
+  display:none;
 }
-.assist-msg--assistant{ background: rgba(56,139,253,.08); }
-.assist-msg--user{ background: rgba(240,246,252,.03); }
+.assist-msg--assistant{border:none;}
+.assist-msg--user{ background: rgba(240,246,252,.03);margin-left:auto; }
 
 .assist-msg__meta{
   display:flex; align-items:center; gap:8px;
@@ -1256,7 +1256,6 @@ body.drilldown-open .drilldown__inner {
 .assist-msg__body code{ background: rgba(240,246,252,.08); padding:1px 4px; border-radius:6px; }
 
 .assist-compose{
-  border-top:1px solid rgba(240,246,252,.12);
   padding:12px 18px 16px 18px;
   background: transparent;
 }

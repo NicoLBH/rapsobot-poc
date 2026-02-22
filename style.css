@@ -1240,7 +1240,7 @@ body.drilldown-open .drilldown__inner {
   display:none;
 }
 .assist-msg--assistant{border:none;}
-.assist-msg--user{ background: rgba(240,246,252,.03);margin-left:auto; }
+.assist-msg--user{ background: rgba(240,246,252,.03);margin-left:auto; width:60%}
 
 .assist-msg__meta{
   display:flex; align-items:center; gap:8px;

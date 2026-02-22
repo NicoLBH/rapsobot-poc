@@ -1026,6 +1026,10 @@ body.is-resizing{
   padding:0 12px;
 }
 .actions-row--details .rapso-mention-hint{margin-right:auto;}
+.actions-row--details .actions-row__right{width:100%;}
+.actions-row__right > :nth-child(2) {
+  margin-left: auto;
+}
 .gh-btn--issue-action{display:inline-flex;align-items:center;gap:8px;}
 .gh-btn--issue-action svg{flex:0 0 auto;}
 .gh-btn__label{white-space:nowrap;}

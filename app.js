@@ -2523,7 +2523,8 @@ const note = String(e?.message || "").trim();
   function commentBoxHtmlFor(suffix) {
     const id = (base) => `${base}${suffix}`;
 
-    const commentBtn = `<button class="gh-btn gh-btn--help-mode" data-action="toggle-help" type="button" aria-pressed="false">Help</button><button class="gh-btn gh-btn--comment is-disabled" data-action="add-comment" type="button" disabled>Comment</button>`;
+    const helpBtn = `<button class="gh-btn gh-btn--help-mode" data-action="toggle-help" type="button" aria-pressed="false">Help</button>`;
+    const commentBtn = `<button class="gh-btn gh-btn--comment is-disabled" data-action="add-comment" type="button" disabled>Comment</button>`;
 
     // Situation / Sujet actions (GitHub-like)
     const issueStatus = (p ? getEffectiveProblemStatus(p.problem_id) : (s ? getEffectiveSituationStatus(s.situation_id) : "open"));
@@ -2574,7 +2575,7 @@ const note = String(e?.message || "").trim();
               <span>Astuce&nbsp;: mentionne <span class="mono">@rapso</span> dans ton commentaire pour solliciter une réponse de RAPSOBOT.</span>
             </div>
             <div class="actions-row__right" style="display:flex; align-items:center; gap:8px; justify-content:flex-end; flex:0 0 auto;">
-              ${actionsRowInner}
+              ${helpBtn}${actionsRowInner}
             </div>
           </div>
         </div>

@@ -3101,7 +3101,7 @@ function renderMiddle() {
         <p>Chargez votre document PDF</p>
         <p>Cliquez sur le bouton <b>"Run analysis"</b></p>
         <p style="color:var(--muted)">
-          ⏳ Les analyses peuvent prendre entre 1 et 6 minutes selon la taille du PDF.
+          ⏳ Les analyses peuvent prendre entre 1 et 3 minutes selon la taille du PDF.
         </p>
     
         <h3>Limites du PoC</h3>
@@ -3115,6 +3115,7 @@ function renderMiddle() {
         <p>
           La <b>validation humaine</b> (commentaire, validation, refus...) n'est pas implémentée dans cette version du PoC.
         </p>
+        <img src="welcome.svg" alt="image" class="welwome-image"/>
 
       </div>
     `;

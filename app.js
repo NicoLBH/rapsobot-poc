@@ -3115,7 +3115,7 @@ function renderMiddle() {
         <p>
           La <b>validation humaine</b> (commentaire, validation, refus...) n'est pas implémentée dans cette version du PoC.
         </p>
-        <img src="welcome.svg" alt="image" class="welwome-image"/>
+        <img src="https://nicolbh.github.io/rapsobot-poc/welcome.svg" alt="image" class="welwome-image"/>
 
       </div>
     `;

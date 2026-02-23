@@ -1472,7 +1472,7 @@ function applyAssistantToolCall(tc, opts) {
     for (const aid of avisIds) {
       // only for current F/S/D/HM/PM/SO avis 
       const baseV = String(getEffectiveAvisVerdict(aid) || "").toUpperCase();
-      if (baseV !== "F" && baseV !== "S" && baseV !== "D" && baseV !== "HM" && baseV !== "PM" && baseV !== "S0") continue;
+      if (baseV !== "F" && baseV !== "S" && baseV !== "D" && baseV !== "HM" && baseV !== "PM" && baseV !== "SO") continue;
       applyAssistantToolCall({ name: "set_avis_verdict", arguments: { avis_id: aid, verdict, note, add_comment_to_sujet: false } }, opts);
     }
 

@@ -1316,7 +1316,7 @@ function buildRapsoAssistantContext(userMessage) {
   const d = state.data;
   if (!d) return {
     run_id: null,
-    selection: { only_verdicts: ["D","S"] },
+    selection: { only_verdicts: ["F","S","D","HM","PM","SO"] },
     project: { situations: [] },
     user_message: String(userMessage || "").trim(),
     assistant_config: (state.assistant && state.assistant.config) ? state.assistant.config : null,
@@ -1369,7 +1369,7 @@ function buildRapsoAssistantContext(userMessage) {
 
   return {
     run_id: d.run_id || null,
-    selection: { only_verdicts: ["D","S"] },
+    selection: { only_verdicts: ["F","S","D","HM","PM","SO"] },
     project: { situations },
     execution_policy: {
       requires_explicit_authorization_for_actions: true,
@@ -1467,9 +1467,9 @@ function applyAssistantToolCall(tc, opts) {
 
     const avisIds = findAvisIdsForProblem(sujet_id);
     for (const aid of avisIds) {
-      // only for current D/S avis
+      // only for current F/S/D/HM/PM/SO avis 
       const baseV = String(getEffectiveAvisVerdict(aid) || "").toUpperCase();
-      if (baseV !== "D" && baseV !== "S") continue;
+      if (baseV !== "F" && baseV !== "S" && baseV !== "D" && baseV !== "HM" && baseV !== "PM" && baseV !== "S0") continue;
       applyAssistantToolCall({ name: "set_avis_verdict", arguments: { avis_id: aid, verdict, note, add_comment_to_sujet: false } }, opts);
     }
 
@@ -2628,7 +2628,8 @@ const note = String(e?.message || "").trim();
   function commentBoxHtmlFor(suffix) {
     const id = (base) => `${base}${suffix}`;
 
-    const commentBtn = `<button class="gh-btn gh-btn--help-mode" data-action="toggle-help" type="button" aria-pressed="false">Help</button><button class="gh-btn gh-btn--comment is-disabled" data-action="add-comment" type="button" disabled>Comment</button>`;
+    const helpBtn = `<button class="gh-btn gh-btn--help-mode" data-action="toggle-help" type="button" aria-pressed="false">Help</button>`;
+    const commentBtn = `<button class="gh-btn gh-btn--comment is-disabled" data-action="add-comment" type="button" disabled>Comment</button>`;
 
     // Situation / Sujet actions (GitHub-like)
     const issueStatus = (p ? getEffectiveProblemStatus(p.problem_id) : (s ? getEffectiveSituationStatus(s.situation_id) : "open"));
@@ -2647,8 +2648,8 @@ const note = String(e?.message || "").trim();
     const validateBtn = `<button class="gh-btn" data-action="avis-validate" type="button">Validate</button>`;
 
     const actionsRowInner = a
-      ? `${verdictSwitch}${validateBtn}${commentBtn}`
-      : `${isIssueOpen ? closeBtn : reopenBtn}${commentBtn}`;
+      ? `${helpBtn}${verdictSwitch}${validateBtn}${commentBtn}`
+      : `${helpBtn}${isIssueOpen ? closeBtn : reopenBtn}${commentBtn}`;
 
   
     return decisionTarget ? `

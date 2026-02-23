@@ -1,41 +1,36 @@
-<!-- rapsobot-welcome-orchestrator-dark.svg -->
 <svg width="500" height="300" viewBox="0 0 500 300" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="RAPSOBOT welcome illustration (dark)">
   <defs>
     <style>
-      /* Background */
       .bg   { fill:#0D1117; }
       .g1   { fill:#161B22; }
       .g2   { fill:#21262D; }
       .g3   { fill:#30363D; }
       .g4   { fill:#484F58; opacity:.55; }
 
-      /* Accents */
       .vio  { stroke:#8B5CF6; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
       .vio2 { stroke:#A78BFA; stroke-width:1.2; stroke-linecap:round; stroke-linejoin:round; opacity:.55; }
       .vio3 { fill:#8B5CF6; opacity:.95; }
-      .ice  { fill:#E6EDF3; opacity:.92; }
-      .ice2 { fill:#E6EDF3; opacity:.70; }
 
-      /* UI-like lines */
+      .ice  { fill:#E6EDF3; opacity:.92; }
+      .ice2 { fill:#E6EDF3; opacity:.72; }
+
       .line { stroke:#30363D; stroke-width:1; opacity:.8; }
       .hair { stroke:#484F58; stroke-width:1; opacity:.55; }
     </style>
 
-    <!-- Subtle glow for violet nodes -->
     <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
       <feGaussianBlur in="SourceGraphic" stdDeviation="1.6" result="blur"/>
       <feColorMatrix in="blur" type="matrix"
         values="1 0 0 0 0
                 0 1 0 0 0
                 0 0 1 0 0
-                0 0 0 .35 0" />
+                0 0 0 .35 0"/>
       <feMerge>
         <feMergeNode/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
 
-    <!-- Slight shadow for foreground robot -->
     <filter id="panelShadow" x="-20%" y="-20%" width="160%" height="160%">
       <feOffset dx="0" dy="2" />
       <feGaussianBlur stdDeviation="3" result="s"/>
@@ -43,7 +38,7 @@
         values="0 0 0 0 0
                 0 0 0 0 0
                 0 0 0 0 0
-                0 0 0 .35 0" />
+                0 0 0 .35 0"/>
       <feMerge>
         <feMergeNode/>
         <feMergeNode in="SourceGraphic"/>
@@ -51,19 +46,18 @@
     </filter>
 
     <clipPath id="scanClip">
-      <rect x="0" y="0" width="500" height="300" rx="0" />
+      <rect x="0" y="0" width="500" height="300"/>
     </clipPath>
   </defs>
 
-  <!-- Background -->
   <rect class="bg" x="0" y="0" width="500" height="300"/>
 
-  <!-- Background: abstract site plates -->
+  <!-- Site -->
   <g id="site">
     <path class="g1" d="M28 220c46-26 90-40 140-45 62-6 106 4 156 20 47 15 92 21 148 12v48H28v-35z"/>
     <path class="g2" d="M40 232c34-18 76-28 128-33 66-6 110 4 162 20 45 14 88 18 130 10v36H40v-33z" opacity=".85"/>
 
-    <!-- scaffold frames -->
+    <!-- building / scaffold -->
     <g opacity=".85">
       <path class="g2" d="M318 96h114v102H318V96z"/>
       <path class="bg" d="M330 108h90v78h-90v-78z" opacity=".35"/>
@@ -74,106 +68,116 @@
       <path class="hair" d="M400 96v102"/>
     </g>
 
-    <!-- Ground baseline -->
     <path class="g3" d="M30 242h440v4H30z" opacity=".75"/>
   </g>
 
-  <!-- Crane (clearer, GitHub-like silhouette) -->
+  <!-- Crane moved right + higher, mast between robot and building -->
   <g id="crane" opacity=".78">
     <!-- mast -->
-    <path class="g3" d="M86 72h10v170H86V72z"/>
+    <path class="g3" d="M266 52h10v190h-10V52z"/>
     <!-- lattice hints -->
-    <path class="hair" d="M86 96h10"/>
-    <path class="hair" d="M86 122h10"/>
-    <path class="hair" d="M86 148h10"/>
-    <path class="hair" d="M86 174h10"/>
-    <path class="hair" d="M86 200h10"/>
+    <path class="hair" d="M266 78h10"/>
+    <path class="hair" d="M266 104h10"/>
+    <path class="hair" d="M266 130h10"/>
+    <path class="hair" d="M266 156h10"/>
+    <path class="hair" d="M266 182h10"/>
+    <path class="hair" d="M266 208h10"/>
 
-    <!-- jib -->
-    <path class="g3" d="M92 84h190v8H92v-8z"/>
-    <path class="g4" d="M272 92l-28 22h12l24-18-8-4z"/>
-    <!-- trolley cable + hook -->
-    <path class="g4" d="M210 92h4v38h-4z"/>
-    <path class="g4" d="M202 130h20v6h-20z" opacity=".55"/>
-    <path class="g4" d="M212 136h2v14h-2z" opacity=".7"/>
-    <path class="g4" d="M208 150h10v6h-10z" opacity=".7"/>
+    <!-- jib to the right -->
+    <path class="g3" d="M272 64h170v8H272v-8z"/>
+    <path class="g4" d="M434 72l-28 22h12l24-18-8-4z"/>
+
+    <!-- hook between mast and building -->
+    <path class="g4" d="M366 72h4v48h-4z"/>
+    <path class="g4" d="M358 120h20v6h-20z" opacity=".55"/>
+    <path class="g4" d="M368 126h2v14h-2z" opacity=".7"/>
+    <path class="g4" d="M364 140h10v6h-10z" opacity=".7"/>
   </g>
 
   <!-- Orchestration network -->
   <g id="orchestration" clip-path="url(#scanClip)">
     <circle cx="235" cy="140" r="74" class="vio2" opacity=".18"/>
     <circle cx="235" cy="140" r="52" class="vio2" opacity=".14"/>
-
     <path class="vio2" d="M210 132 C 250 108, 282 104, 320 110"/>
     <path class="vio2" d="M214 150 C 252 170, 284 184, 316 194"/>
     <path class="vio2" d="M232 162 C 274 174, 300 160, 334 142"/>
   </g>
 
-  <!-- Agent nodes -->
+  <!-- Agents -->
   <g id="agents" filter="url(#softGlow)">
     <circle cx="332" cy="110" r="12" class="g2"/>
     <circle cx="332" cy="110" r="6" class="vio3"/>
-    <path class="line" d="M348 110h46" />
+    <path class="line" d="M348 110h46"/>
     <rect x="398" y="104" width="52" height="12" rx="6" class="g2" opacity=".9"/>
     <rect x="404" y="108" width="24" height="4" rx="2" class="g3" opacity=".9"/>
     <rect x="432" y="108" width="12" height="4" rx="2" class="g3" opacity=".65"/>
 
     <circle cx="324" cy="194" r="12" class="g2"/>
     <circle cx="324" cy="194" r="6" class="vio3"/>
-    <path class="line" d="M340 194h40" />
+    <path class="line" d="M340 194h40"/>
     <rect x="384" y="188" width="66" height="12" rx="6" class="g2" opacity=".9"/>
     <rect x="390" y="192" width="38" height="4" rx="2" class="g3" opacity=".9"/>
     <rect x="432" y="192" width="10" height="4" rx="2" class="g3" opacity=".65"/>
 
     <circle cx="346" cy="142" r="12" class="g2"/>
     <circle cx="346" cy="142" r="6" class="vio3"/>
-    <path class="line" d="M362 142h28" />
+    <path class="line" d="M362 142h28"/>
     <rect x="394" y="136" width="56" height="12" rx="6" class="g2" opacity=".9"/>
     <rect x="400" y="140" width="30" height="4" rx="2" class="g3" opacity=".9"/>
     <rect x="434" y="140" width="10" height="4" rx="2" class="g3" opacity=".65"/>
   </g>
 
-  <!-- Robot (closer to your logo) -->
+  <!-- Robot (logo-like corrected) -->
   <g id="robot" filter="url(#panelShadow)">
-    <!-- base / stand (no tripod) -->
+    <!-- base -->
     <path class="g2" d="M118 210c22 16 58 16 82 0v18c-26 18-56 18-82 0v-18z" opacity=".92"/>
     <path class="g3" d="M112 209c26-18 70-18 96 0v9c-26-16-70-16-96 0v-9z" opacity=".82"/>
 
-    <!-- antenna stack: top bar + stem + knob -->
-    <rect x="150" y="88" width="36" height="10" rx="4" class="g2"/>
-    <rect x="164" y="70" width="8" height="18" rx="3" class="g2"/>
+    <!-- top cap: only top corners rounded (shorter height) -->
+    <path class="g2" d="M152 92
+                         Q152 86 158 86
+                         H178
+                         Q184 86 184 92
+                         V98
+                         H152
+                         V92Z"/>
+    <!-- stem + antenna -->
+    <rect x="164" y="72" width="8" height="14" rx="3" class="g2"/>
     <circle cx="168" cy="64" r="7" class="g2"/>
     <circle cx="168" cy="64" r="3.2" class="vio3" opacity=".55"/>
 
-    <!-- head: rounded rect + trapezoid ears -->
+    <!-- head -->
     <rect x="126" y="98" width="92" height="86" rx="22" class="g2"/>
-    <!-- ears -->
-    <path class="g2" d="M126 118l-14 10v34l14 10v-54z"/>
-    <path class="g2" d="M218 118l14 10v34l-14 10v-54z"/>
 
-    <!-- inner face cut -->
-    <rect x="138" y="112" width="68" height="58" rx="16" class="g1" opacity=".92"/>
+    <!-- smaller ears (do not hit bottom rounded corner) -->
+    <path class="g2" d="M126 120 L116 128 V154 L126 162 Z"/>
+    <path class="g2" d="M218 120 L228 128 V154 L218 162 Z"/>
 
-    <!-- eyes -->
-    <circle cx="156" cy="141" r="4.6" class="ice"/>
-    <circle cx="188" cy="141" r="4.6" class="ice"/>
-    <circle cx="156" cy="141" r="1.7" class="bg" opacity=".35"/>
-    <circle cx="188" cy="141" r="1.7" class="bg" opacity=".35"/>
+    <!-- Thick R, adjusted loop + legs spacing -->
+    <path class="ice2" d="M150 164V124H171
+                          C182 124 189 130 189 140
+                          C189 148 184 154 175 155
+                          L191 170H178L164 156H159V170H150V164Z
+                          M159 132V148H170
+                          C176 148 180 145 180 140
+                          C180 135 176 132 170 132H159Z"/>
 
-    <!-- thick R (monogram-like) -->
-    <path class="ice2" d="M150 162v-38h18c10 0 16 6 16 14 0 7-4 12-12 13l12 11h-12l-11-10h-3v10h-8zm8-18h9c6 0 8-3 8-7 0-4-3-7-8-7h-9v14z"/>
+    <!-- Eyes inside R loop (cutout look) -->
+    <circle cx="164.5" cy="141" r="3.8" class="bg" opacity=".95"/>
+    <circle cx="175.5" cy="141" r="3.8" class="bg" opacity=".95"/>
+    <circle cx="164.5" cy="141" r="1.2" class="g3" opacity=".35"/>
+    <circle cx="175.5" cy="141" r="1.2" class="g3" opacity=".35"/>
 
-    <!-- orchestration hub on robot -->
+    <!-- orchestration hub -->
     <circle cx="218" cy="144" r="7" class="g2"/>
     <circle cx="218" cy="144" r="3.4" class="vio3"/>
 
-    <!-- foreground links -->
+    <!-- links -->
     <path class="vio" d="M225 140 C 255 114, 290 106, 320 110"/>
     <path class="vio" d="M224 150 C 254 170, 286 186, 316 194"/>
     <path class="vio" d="M224 156 C 266 168, 298 156, 334 142"/>
   </g>
 
-  <!-- small hint -->
   <g id="hints" opacity=".9">
     <path class="vio2" d="M92 206h18"/>
     <path class="vio2" d="M92 212h12"/>

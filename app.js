@@ -3092,14 +3092,16 @@ function renderMiddle() {
   if (!d || !Array.isArray(d.situations) || !Array.isArray(d.problems) || !Array.isArray(d.avis)) {
     host.classList.add("emptyState");
     host.innerHTML = `
-      <div class="empty-welcome">
+      <div class="emptyWelcome">
         <h1>
           <b>WELCOME</b>
           <span style="font-size:18px;font-weight:400;">
             to RAPSOBOT Proof Of Concept (PoC V1) 🎉
           </span>
         </h1>
-      
+
+        <img src="https://nicolbh.github.io/rapsobot-poc/welcome.svg" alt="image" class="welcomeImage"/>
+
         <h3>Qu’est-ce que RAPSOBOT ?</h3>
         <p>
           RAPSOBOT est un <b>orchestrateur multi-agents IA</b> conçu pour assister
@@ -3111,7 +3113,8 @@ function renderMiddle() {
           le PoC vise à <b>préparer et structurer</b> l’analyse pour que la décision finale reste
           <b>entièrement humaine</b>.
         </p>
-      
+        
+        </br></br>
         <h3>Concept clé : organiser la complexité</h3>
         <p>
           L’IA peut produire beaucoup d’éléments (des avis très fins). Pour rester utilisable,
@@ -3123,7 +3126,8 @@ function renderMiddle() {
           • <b>Sujet</b> : regroupement cohérent à traiter<br/>
           • <b>Avis</b> : point technique unitaire (le niveau “granulaire”)
         </p>
-      
+
+        </br></br>
         <h3>Comment ça marche</h3>
         <p>
           1. Saisissez la <b>"Référence de Vérité"</b> dans le menu de gauche (données d’entrée validées par un humain)
@@ -3137,7 +3141,8 @@ function renderMiddle() {
         <p style="color:var(--muted)">
           ⏳ Les analyses peuvent prendre entre 1 et 3 minutes selon la taille du PDF.
         </p>
-      
+
+        </br></br>
         <h3>Qui fait quoi (orchestrateur & agents)</h3>
         <p style="color:var(--muted); margin-bottom:10px;">
           <b>PDF</b> → extraction → orchestration → analyses spécialisées → structuration → résultats
@@ -3154,9 +3159,10 @@ function renderMiddle() {
         </p>
         <p>
           Chaque <b>run</b> est <b>horodaté</b> et associé à un <b>run_id</b> pour faciliter la traçabilité et
-          la relecture (logique utile côté métier, et robuste côté DSI).
+          la relecture.
         </p>
-      
+
+        </br></br>
         <h3>Assistant & Mode Help</h3>
         <p>
           Cliquez sur la <b>tête de robot</b> en haut à gauche pour ouvrir l’<b>assistant privé de pilotage</b>.
@@ -3172,9 +3178,10 @@ function renderMiddle() {
         <p>
           Ce mode permet d’échanger de manière <b>éphémère</b> avec l’agent spécialiste (parasismique) pour clarifier une règle,
           comprendre une sortie, ou reformuler un raisonnement.
-          Les messages Help ne sont pas persistants et disparaissent automatiquement.
+          Les messages Help ne sont pas persistants et disparaissent automatiquement (ils ne sont jamais publiés dans le journal d'activités de l'avis / sujet / situation)..
         </p>
-      
+
+        </br></br>
         <h3>Limites actuelles du PoC (V1)</h3>
         <p>
           • Référentiel supporté : <b>Eurocode 8 + Annexe Nationale Française</b><br/>
@@ -3189,7 +3196,6 @@ function renderMiddle() {
           Ce Proof of Concept explore un périmètre volontairement borné : démontrer qu’une orchestration multi-agents
           peut structurer une analyse réglementaire complexe, sans déplacer la responsabilité hors de l’humain.
         </p>
-        <img src="https://nicolbh.github.io/rapsobot-poc/welcome.svg" alt="image" class="welcomeImage"/>
       </div>
     `;
     if (counts) if (counts) counts.textContent = "—";

@@ -3090,7 +3090,7 @@ function renderMiddle() {
   if (!d || !Array.isArray(d.situations) || !Array.isArray(d.problems) || !Array.isArray(d.avis)) {
     host.classList.add("emptyState");
     host.innerHTML = `
-      <div class="empty-welcome">
+      <div class="emptyWelcome">
         <h1><b>WELCOME</b><span style="font-size:18px;font-weight:400;"> to RAPSOBOT Proof Of Concept 🎉</span></h1>
     
         <h3>Comment ça marche</h3>
@@ -3115,7 +3115,7 @@ function renderMiddle() {
         <p>
           La <b>validation humaine</b> (commentaire, validation, refus...) n'est pas implémentée dans cette version du PoC.
         </p>
-        <img src="https://nicolbh.github.io/rapsobot-poc/welcome.svg" alt="image" class="welwome-image"/>
+        <img src="https://nicolbh.github.io/rapsobot-poc/welcome.svg" alt="image" class="welcomeImage"/>
 
       </div>
     `;

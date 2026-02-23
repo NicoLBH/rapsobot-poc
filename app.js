@@ -3178,7 +3178,7 @@ function renderMiddle() {
         <p>
           Ce mode permet d’échanger de manière <b>éphémère</b> avec l’agent spécialiste (parasismique) pour clarifier une règle,
           comprendre une sortie, ou reformuler un raisonnement.
-          Les messages Help ne sont pas persistants et disparaissent automatiquement (ils ne sont jamais publiés dans le journal d'activités de l'avis / sujet / situation)..
+          Les messages Help ne sont pas persistants et disparaissent automatiquement (ils ne sont jamais publiés dans le journal d'activités de l'avis / sujet / situation).
         </p>
 
         </br></br>

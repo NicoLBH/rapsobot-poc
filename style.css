@@ -177,8 +177,8 @@ body:not(.sidebar-collapsed) .sidebar-fab{display:none;}
 #issuesTable{flex:1 1 auto;min-height:0;overflow:hidden;margin-top:16px;}
 .details-body{flex:1 1 auto;min-height:0;overflow:auto;}
 
-.empty-welcome{max-width:730px;margin-right:auto;margin-left:auto;}
-.welcome-image{width:480px;margin-right:auto;margin-left:auto;}
+.emptyWelcome{max-width:730px;margin-right:auto;margin-left:auto;}
+.welcomeImage{width:480px;margin-right:auto;margin-left:auto;margin-top:-50px;}
 
 .gh-panel__head{
   padding:12px;

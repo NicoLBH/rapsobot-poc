@@ -180,7 +180,7 @@ body:not(.sidebar-collapsed) .sidebar-fab{display:none;}
 .details-body{flex:1 1 auto;min-height:0;overflow:auto;}
 
 .emptyWelcome{max-width:730px;margin-right:auto;margin-left:auto;padding:20px;}
-.welcomeImage{width:480px;margin-right:auto;margin-left:auto;margin-top:-50px;}
+.welcomeImage{width:480px;margin-right:auto;margin-left:auto;margin-top:-50px;margin-bottom:-120px;}
 
 .gh-panel__head{
   padding:12px;

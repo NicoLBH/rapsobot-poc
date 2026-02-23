@@ -3092,33 +3092,104 @@ function renderMiddle() {
   if (!d || !Array.isArray(d.situations) || !Array.isArray(d.problems) || !Array.isArray(d.avis)) {
     host.classList.add("emptyState");
     host.innerHTML = `
-      <div class="emptyWelcome">
-        <h1><b>WELCOME</b><span style="font-size:18px;font-weight:400;"> to RAPSOBOT Proof Of Concept 🎉</span></h1>
-    
+      <div class="empty-welcome">
+        <h1>
+          <b>WELCOME</b>
+          <span style="font-size:18px;font-weight:400;">
+            to RAPSOBOT Proof Of Concept (PoC V1) 🎉
+          </span>
+        </h1>
+      
+        <h3>Qu’est-ce que RAPSOBOT ?</h3>
+        <p>
+          RAPSOBOT est un <b>orchestrateur multi-agents IA</b> conçu pour assister
+          les équipes de contrôle technique dans l’analyse réglementaire (notamment parasismique),
+          en rendant le raisonnement <b>plus structuré</b>, <b>plus lisible</b> et <b>traçable</b>.
+        </p>
+        <p>
+          Ici, l’objectif n’est pas de “sortir un avis opposable automatiquement” :
+          le PoC vise à <b>préparer et structurer</b> l’analyse pour que la décision finale reste
+          <b>entièrement humaine</b>.
+        </p>
+      
+        <h3>Concept clé : organiser la complexité</h3>
+        <p>
+          L’IA peut produire beaucoup d’éléments (des avis très fins). Pour rester utilisable,
+          RAPSOBOT organise ces résultats dans une hiérarchie simple :
+        </p>
+        <p><b>Situation → Sujet → Avis</b></p>
+        <p style="color:var(--muted)">
+          • <b>Situation</b> : unité de décision humaine (contextualisée et actionnable)<br/>
+          • <b>Sujet</b> : regroupement cohérent à traiter<br/>
+          • <b>Avis</b> : point technique unitaire (le niveau “granulaire”)
+        </p>
+      
         <h3>Comment ça marche</h3>
         <p>
-          Saisissez dans le menu de gauche la <b>"vérité"</b> de votre projet :
-          les données d'entrée validées par un humain comme <b>Référence de Vérité</b>.
+          1. Saisissez la <b>"Référence de Vérité"</b> dans le menu de gauche (données d’entrée validées par un humain)
         </p>
-        <p>Chargez votre document PDF</p>
-        <p>Cliquez sur le bouton <b>"Run analysis"</b></p>
+        <p>
+          2. Chargez votre document PDF (notes de calcul)
+        </p>
+        <p>
+          3. Cliquez sur <b>"Run analysis"</b>
+        </p>
         <p style="color:var(--muted)">
           ⏳ Les analyses peuvent prendre entre 1 et 3 minutes selon la taille du PDF.
         </p>
-    
-        <h3>Limites du PoC</h3>
-        <p>
-          Référentiel supporté :
-          <b>Eurocode 8</b> + Annexe Nationale Française + Arrêté du 22 octobre 2010.
+      
+        <h3>Qui fait quoi (orchestrateur & agents)</h3>
+        <p style="color:var(--muted); margin-bottom:10px;">
+          <b>PDF</b> → extraction → orchestration → analyses spécialisées → structuration → résultats
+        </p>
+        <p style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+                  font-size:12px; line-height:1.5; color:var(--muted); padding:10px 12px; border:1px solid rgba(255,255,255,.08);
+                  border-radius:8px; background:rgba(255,255,255,.02);">
+          PDF (notes de calcul)<br/>
+          └─ Extraction / préparation des contenus<br/>
+             └─ Orchestrateur (coordonne les étapes, consolide, gère les dépendances)<br/>
+                ├─ Agents spécialisés (ex. PS) : analysent un périmètre métier, produisent des avis structurés<br/>
+                └─ Agents instrumentaux : produisent des faits vérifiables (ex. règles, contrôles déterministes)<br/>
+                   └─ Structuration finale : Situation → Sujet → Avis
         </p>
         <p>
-          Seules les <b>Notes de Calcul</b> PDF sont prises en charge (pas de plans, pas de modèle 3D…).
+          Chaque <b>run</b> est <b>horodaté</b> et associé à un <b>run_id</b> pour faciliter la traçabilité et
+          la relecture (logique utile côté métier, et robuste côté DSI).
+        </p>
+      
+        <h3>Assistant & Mode Help</h3>
+        <p>
+          Cliquez sur la <b>tête de robot</b> en haut à gauche pour ouvrir l’<b>assistant privé de pilotage</b>.
         </p>
         <p>
-          La <b>validation humaine</b> (commentaire, validation, refus...) n'est pas implémentée dans cette version du PoC.
+          L’assistant peut <b>préparer</b> des actions (ex. mise à jour d’avis, fermeture / réouverture, modifications en masse),
+          mais demande une <b>autorisation explicite</b> avant exécution.
+        </p>
+      
+        <p>
+          Un <b>Mode Help</b> est disponible via <code>/help</code> ou <code>@help</code>.
+        </p>
+        <p>
+          Ce mode permet d’échanger de manière <b>éphémère</b> avec l’agent spécialiste (parasismique) pour clarifier une règle,
+          comprendre une sortie, ou reformuler un raisonnement.
+          Les messages Help ne sont pas persistants et disparaissent automatiquement.
+        </p>
+      
+        <h3>Limites actuelles du PoC (V1)</h3>
+        <p>
+          • Référentiel supporté : <b>Eurocode 8 + Annexe Nationale Française</b><br/>
+          • Seules les <b>notes de calcul PDF</b> sont analysées (pas de plans, pas de maquette 3D/BIM)<br/>
+          • Le processus de <b>validation humaine des avis</b> n’est pas implémenté dans cette version (commentaires / validation / refus)<br/>
+          • Aucune signature ni avis opposable automatisé : la décision finale reste humaine<br/>
+          • Optimisation des performances hors périmètre du PoC (latence, volumétrie, industrialisation)<br/>
+          • Pas d’intégration SI (GED/archivage/SSO/gestion avancée des droits) dans cette version
+        </p>
+      
+        <p style="color:var(--muted); margin-top:20px;">
+          Ce Proof of Concept explore un périmètre volontairement borné : démontrer qu’une orchestration multi-agents
+          peut structurer une analyse réglementaire complexe, sans déplacer la responsabilité hors de l’humain.
         </p>
         <img src="https://nicolbh.github.io/rapsobot-poc/welcome.svg" alt="image" class="welcomeImage"/>
-
       </div>
     `;
     if (counts) if (counts) counts.textContent = "—";

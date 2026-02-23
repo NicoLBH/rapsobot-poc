@@ -360,6 +360,9 @@ function verdictDotClass(v) {
   if (s === "D" || s === "DEFAVORABLE" || s === "DEFAV") return "v-dot v-dot--d";
   if (s === "S" || s === "SUSPENDU") return "v-dot v-dot--s";
   if (s === "OK" || s === "F" || s === "FAVORABLE") return "v-dot v-dot--ok";
+  if (s === "HM" || s === "HORS MISSION") return "v-dot v-dot--hm";
+  if (s === "PM" || s === "POUR MEMOIRE") return "v-dot v-dot--pm";
+  if (s === "SO" || s === "SANS OBJET") return "v-dot v-dot--so";
   return "v-dot";
 }
 
@@ -2064,7 +2067,7 @@ function renderDetails(opts) {
 
     const COLS = ``;
 
-    const verdictOrder = ["D","S","F","HM","PM","SO"];
+    const verdictOrder = ["F","S","D","HM","PM","SO"];
     const verdictCounts = Object.fromEntries(verdictOrder.map(v => [v, 0]));
     for (const ax of avisFiltered) {
       const v = String(getEffectiveAvisVerdict(ax?.avis_id) || "").toUpperCase();
@@ -2115,7 +2118,7 @@ function renderDetails(opts) {
     const closedPb = problems.filter((x) => String(getEffectiveProblemStatus(x?.problem_id) || "closed").toLowerCase() !== "open").length;
 
     // Verdict counts for all avis attached to this situation (after filters)
-    const verdictOrder = ["D","S","F","HM","PM","SO"];
+    const verdictOrder = ["F","S","D","HM","PM","SO"];
     const verdictCounts = Object.fromEntries(verdictOrder.map(v => [v, 0]));
     for (const pb of problems) {
       const avisAll = (pb?.avis_ids || []).map((aid) => avById.get(idFromAny(aid))).filter(Boolean);
@@ -2214,7 +2217,7 @@ function renderDetails(opts) {
   // Head: GitHub-like title (badge + title + #id). We no longer show the separate meta line.
   if (target === "main") setDetailsMeta("");
 
-  const verdictOrder = ["D","S","F","HM","PM","SO"];
+  const verdictOrder = ["F","S","D","HM","PM","SO"];
 
   const computeVerdictCountsForAvisList = (avisList) => {
     const counts = Object.fromEntries(verdictOrder.map(v => [v, 0]));
@@ -2639,7 +2642,7 @@ const note = String(e?.message || "").trim();
     const reopenBtn = `<button class="gh-btn gh-btn--issue-action" data-action="issue-reopen" type="button">${SVG_ISSUE_REOPENED}<span class="gh-btn__label">Reopen issue</span></button>`;
 
     // Avis actions
-    const verdicts = ["F","D","S","HM","PM","SO"];
+    const verdicts = ["F","S","D","HM","PM","SO"];
     const activeVerdict = String(uiState.tempAvisVerdict || "F").toUpperCase();
     const verdictSwitch = `<div class="verdict-switch" role="group" aria-label="Verdict">
       ${verdicts.map(v => `<button class="verdict-switch__btn ${v===activeVerdict ? "is-active" : ""}" data-action="set-verdict" data-verdict="${v}" type="button">${v}</button>`).join("")}

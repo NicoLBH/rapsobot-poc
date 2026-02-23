@@ -3096,8 +3096,9 @@ function renderMiddle() {
         <h1>
           <b>WELCOME</b>
           <span style="font-size:18px;font-weight:400;">
-            to RAPSOBOT Proof Of Concept (PoC V1) 🎉
+            to RAPSOBOT Proof Of Concept
           </span>
+          <span style="font-size:24px;">  🎉</span>
         </h1>
 
         <img src="https://nicolbh.github.io/rapsobot-poc/welcome.svg" alt="image" class="welcomeImage"/>
